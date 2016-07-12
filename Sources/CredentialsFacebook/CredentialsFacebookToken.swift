@@ -36,7 +36,7 @@ public class CredentialsFacebookToken : CredentialsPluginProtocol {
     public init () {}
 
 #if os(OSX)
-    public var usersCache : NSCache<NSString, BaseCacheElement>?
+    public var usersCache : Cache<NSString, BaseCacheElement>?
 #else
     public var usersCache : NSCache?
 #endif
