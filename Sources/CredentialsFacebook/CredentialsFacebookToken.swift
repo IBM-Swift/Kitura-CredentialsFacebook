@@ -36,13 +36,13 @@ public class CredentialsFacebookToken : CredentialsPluginProtocol {
     public init () {}
 
 #if os(OSX)
-    public var usersCache : Cache<NSString, BaseCacheElement>?
+    public var usersCache : NSCache<NSString, BaseCacheElement>?
 #else
-    public var usersCache : NSCache?
+    public var usersCache : Cache?
 #endif
 
     public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void) {
-        if let type = request.headers["X-token-type"] where type == name {
+        if let type = request.headers["X-token-type"], type == name {
             if let token = request.headers["access_token"] {
                 let cacheElement = usersCache!.object(forKey: token.bridge())
                 #if os(Linux)
@@ -67,10 +67,10 @@ public class CredentialsFacebookToken : CredentialsPluginProtocol {
                 requestOptions.append(.headers(headers))
 
                 let req = HTTP.request(requestOptions) { response in
-                    if let response = response where response.statusCode == HTTPStatusCode.OK {
+                    if let response = response, response.statusCode == HTTPStatusCode.OK {
                         do {
-                            let body = NSMutableData()
-                            try response.readAllData(into: body)
+                            var body = Data()
+                            try response.readAllData(into: &body)
                             let jsonBody = JSON(data: body)
                             if let id = jsonBody["id"].string,
                                 let name = jsonBody["name"].string {

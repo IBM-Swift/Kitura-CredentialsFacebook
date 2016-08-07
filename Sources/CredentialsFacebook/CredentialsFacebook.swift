@@ -46,9 +46,9 @@ public class CredentialsFacebook : CredentialsPluginProtocol {
     }
     
 #if os(OSX)
-    public var usersCache : Cache<NSString, BaseCacheElement>?
+    public var usersCache : NSCache<NSString, BaseCacheElement>?
 #else
-    public var usersCache : NSCache?
+    public var usersCache : Cache?
 #endif
     
     
@@ -65,10 +65,10 @@ public class CredentialsFacebook : CredentialsPluginProtocol {
             requestOptions.append(.headers(headers))
             
             let requestForToken = HTTP.request(requestOptions) { fbResponse in
-                if let fbResponse = fbResponse where fbResponse.statusCode == HTTPStatusCode.OK {
+                if let fbResponse = fbResponse, fbResponse.statusCode == HTTPStatusCode.OK {
                     do {
-                        var body = NSMutableData()
-                        try fbResponse.readAllData(into: body)
+                        var body = Data()
+                        try fbResponse.readAllData(into: &body)
                         var jsonBody = JSON(data: body)
                         if let token = jsonBody["access_token"].string {
                             requestOptions = []
@@ -81,10 +81,10 @@ public class CredentialsFacebook : CredentialsPluginProtocol {
                             requestOptions.append(.headers(headers))
                             
                             let requestForProfile = HTTP.request(requestOptions) { profileResponse in
-                                if let profileResponse = profileResponse where profileResponse.statusCode == HTTPStatusCode.OK {
+                                if let profileResponse = profileResponse, profileResponse.statusCode == HTTPStatusCode.OK {
                                     do {
-                                        body = NSMutableData()
-                                        try profileResponse.readAllData(into: body)
+                                        body = Data()
+                                        try profileResponse.readAllData(into: &body)
                                         jsonBody = JSON(data: body)
                                         if let id = jsonBody["id"].string,
                                             let name = jsonBody["name"].string {
