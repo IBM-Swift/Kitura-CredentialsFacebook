@@ -41,7 +41,11 @@ public class CredentialsFacebookToken : CredentialsPluginProtocol {
     public var usersCache : Cache?
 #endif
 
-    public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void) {
+    public func authenticate (request: RouterRequest, response: RouterResponse,
+                              options: [String:Any], onSuccess: @escaping (UserProfile) -> Void,
+                              onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
+                              onPass: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
+                              inProgress: @escaping () -> Void) {
         if let type = request.headers["X-token-type"], type == name {
             if let token = request.headers["access_token"] {
                 let cacheElement = usersCache!.object(forKey: token.bridge())
