@@ -45,12 +45,7 @@ public class CredentialsFacebook : CredentialsPluginProtocol {
         self.callbackUrl = callbackUrl
     }
     
-#if os(OSX)
     public var usersCache : NSCache<NSString, BaseCacheElement>?
-#else
-    public var usersCache : Cache?
-#endif
-    
     
     /// https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow
     public func authenticate (request: RouterRequest, response: RouterResponse,
