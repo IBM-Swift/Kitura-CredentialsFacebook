@@ -34,7 +34,7 @@ public class CredentialsFacebook : CredentialsPluginProtocol {
     
     private var clientSecret : String
     
-    /// A URL that Facebook redirects back to.
+    /// The URL that Facebook redirects back to.
     public var callbackUrl : String
     
     /// The name of the plugin.
@@ -42,38 +42,38 @@ public class CredentialsFacebook : CredentialsPluginProtocol {
         return "Facebook"
     }
     
-    /// An indication whether the plugin is redirecting or not.
+    /// An indication as to whether the plugin is redirecting or not.
     public var redirecting : Bool {
         return true
     }
     
+    /// User profile cache.
+    public var usersCache : NSCache<NSString, BaseCacheElement>?
+
     /// Initialize a `CredentialsFacebook`.
     ///
-    /// - Parameter clientId: the App ID of the app in the Facebook Developer dashboard.
-    /// - Parameter clientSecret: the App Secret of the app in the Facebook Developer dashboard.
-    /// - Parameter callbackUrl: a URL that Facebook redirects back to.
-    /// - Returns: an instance of `CredentialsFacebook`.
+    /// - Parameter clientId: The App ID of the app in the Facebook Developer dashboard.
+    /// - Parameter clientSecret: The App Secret of the app in the Facebook Developer dashboard.
+    /// - Parameter callbackUrl: The URL that Facebook redirects back to.
     public init (clientId: String, clientSecret : String, callbackUrl : String) {
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.callbackUrl = callbackUrl
     }
     
-    /// Caching of user profile information.
-    public var usersCache : NSCache<NSString, BaseCacheElement>?
-    
     /// Authenticate incoming request using Facebook web login with OAuth.
     ///
-    /// - Parameter request: the `RouterRequest` object used to get information
+    /// - Parameter request: The `RouterRequest` object used to get information
     ///                     about the request.
-    /// - Parameter response: the `RouterResponse` object used to respond to the
+    /// - Parameter response: The `RouterResponse` object used to respond to the
     ///                       request.
-    /// - Parameter options: a dictionary of plugin specific options.
-    /// - Parameter onSuccess: a closure to invoke in case of successful authentication.
-    /// - Parameter onFailure: a closure to invoke in case of authentication failure.
-    /// - Parameter onPass: a closure to invoke when the plugin doesn't recognize the
+    /// - Parameter options: The dictionary of plugin specific options.
+    /// - Parameter onSuccess: The closure to invoke in the case of successful authentication.
+    /// - Parameter onFailure: The closure to invoke in the case of an authentication failure.
+    /// - Parameter onPass: The closure to invoke when the plugin doesn't recognize the
     ///                     authentication token in the request.
-    /// - Parameter inProgress: a closure to invoke in the process of redirecting authentication.
+    /// - Parameter inProgress: The closure to invoke to cause a redirect to the login page in the
+    ///                     case of redirecting authentication.
     public func authenticate (request: RouterRequest, response: RouterResponse,
                               options: [String:Any], onSuccess: @escaping (UserProfile) -> Void,
                               onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
