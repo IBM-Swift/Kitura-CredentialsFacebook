@@ -30,32 +30,32 @@ import Foundation
 /// for more information.
 public class CredentialsFacebook : CredentialsPluginProtocol {
     
-    private var clientId : String
+    private var clientId: String
     
-    private var clientSecret : String
+    private var clientSecret: String
     
     /// The URL that Facebook redirects back to.
-    public var callbackUrl : String
+    public var callbackUrl: String
     
     /// The name of the plugin.
-    public var name : String {
+    public var name: String {
         return "Facebook"
     }
     
     /// An indication as to whether the plugin is redirecting or not.
-    public var redirecting : Bool {
+    public var redirecting: Bool {
         return true
     }
     
     /// User profile cache.
-    public var usersCache : NSCache<NSString, BaseCacheElement>?
+    public var usersCache: NSCache<NSString, BaseCacheElement>?
 
-    /// Initialize a `CredentialsFacebook`.
+    /// Initialize a `CredentialsFacebook` instance.
     ///
     /// - Parameter clientId: The App ID of the app in the Facebook Developer dashboard.
     /// - Parameter clientSecret: The App Secret of the app in the Facebook Developer dashboard.
     /// - Parameter callbackUrl: The URL that Facebook redirects back to.
-    public init (clientId: String, clientSecret : String, callbackUrl : String) {
+    public init (clientId: String, clientSecret: String, callbackUrl: String) {
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.callbackUrl = callbackUrl
@@ -71,7 +71,7 @@ public class CredentialsFacebook : CredentialsPluginProtocol {
     /// - Parameter onSuccess: The closure to invoke in the case of successful authentication.
     /// - Parameter onFailure: The closure to invoke in the case of an authentication failure.
     /// - Parameter onPass: The closure to invoke when the plugin doesn't recognize the
-    ///                     authentication token in the request.
+    ///                     authentication data in the request.
     /// - Parameter inProgress: The closure to invoke to cause a redirect to the login page in the
     ///                     case of redirecting authentication.
     public func authenticate (request: RouterRequest, response: RouterResponse,

@@ -29,20 +29,20 @@ import Foundation
 public class CredentialsFacebookToken : CredentialsPluginProtocol {
 
     /// The name of the plugin.
-    public var name : String {
+    public var name: String {
         return "FacebookToken"
     }
 
     /// An indication as to whether the plugin is redirecting or not.
-    public var redirecting : Bool {
+    public var redirecting: Bool {
         return false
     }
 
-    /// Initialize a `CredentialsFacebookToken`.
-    public init () {}
-
     /// User profile cache.
-    public var usersCache : NSCache<NSString, BaseCacheElement>?
+    public var usersCache: NSCache<NSString, BaseCacheElement>?
+
+    /// Initialize a `CredentialsFacebookToken` instance.
+    public init () {}
 
     /// Authenticate incoming request using Facebook OAuth token.
     ///
@@ -53,8 +53,8 @@ public class CredentialsFacebookToken : CredentialsPluginProtocol {
     /// - Parameter options: The dictionary of plugin specific options.
     /// - Parameter onSuccess: The closure to invoke in the case of successful authentication.
     /// - Parameter onFailure: The closure to invoke in the case of an authentication failure.
-    /// - Parameter onPass: The closure to invoke when the plugin doesn't recognize the
-    ///                     authentication data (usually an authentication token) in the request.
+    /// - Parameter onPass: The closure to invoke when the plugin doesn't recognize
+    ///                     the authentication token in the request.
     /// - Parameter inProgress: The closure to invoke to cause a redirect to the login page in the
     ///                     case of redirecting authentication.
     public func authenticate (request: RouterRequest, response: RouterResponse,
