@@ -49,16 +49,31 @@ public class CredentialsFacebook : CredentialsPluginProtocol {
     
     /// User profile cache.
     public var usersCache: NSCache<NSString, BaseCacheElement>?
+    
+    private let fields: String?
+    
+    private let scope: String?
+    
+    private var delegate: UserProfileDelegate?
+
+    /// A delegate for `UserProfile` manipulation.
+    public var userProfileDelegate: UserProfileDelegate? {
+        return delegate
+    }
 
     /// Initialize a `CredentialsFacebook` instance.
     ///
     /// - Parameter clientId: The App ID of the app in the Facebook Developer dashboard.
     /// - Parameter clientSecret: The App Secret of the app in the Facebook Developer dashboard.
     /// - Parameter callbackUrl: The URL that Facebook redirects back to.
-    public init (clientId: String, clientSecret: String, callbackUrl: String) {
+    /// - Parameter options: A dictionary of plugin specific options.
+    public init (clientId: String, clientSecret: String, callbackUrl: String, options: [String:Any]?=nil) {
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.callbackUrl = callbackUrl
+        scope = options?["scope"] as? String
+        fields = options?["fields"] as? String
+        delegate = options?["userProfileDelegate"] as? UserProfileDelegate
     }
     
     /// Authenticate incoming request using Facebook web login with OAuth.
@@ -100,7 +115,11 @@ public class CredentialsFacebook : CredentialsPluginProtocol {
                             requestOptions.append(.schema("https://"))
                             requestOptions.append(.hostname("graph.facebook.com"))
                             requestOptions.append(.method("GET"))
-                            requestOptions.append(.path("/me?access_token=\(token)"))
+                            var pathFields = ""
+                            if let fields = self.fields {
+                                pathFields = "&fields=" + fields
+                            }
+                            requestOptions.append(.path("/me?access_token=\(token)\(pathFields)"))
                             headers = [String:String]()
                             headers["Accept"] = "application/json"
                             requestOptions.append(.headers(headers))
@@ -111,11 +130,19 @@ public class CredentialsFacebook : CredentialsPluginProtocol {
                                         body = Data()
                                         try profileResponse.readAllData(into: &body)
                                         jsonBody = JSON(data: body)
-                                        if let id = jsonBody["id"].string,
-                                            let name = jsonBody["name"].string {
-                                            let userProfile = UserProfile(id: id, displayName: name, provider: self.name)
+                                        if let delegate = self.delegate,
+                                            let dictionary = jsonBody.dictionaryObject,
+                                            let userProfile = delegate.identityProviderDictionaryToUserProfile(dictionary) {
                                             onSuccess(userProfile)
                                             return
+                                        }
+                                        else {
+                                            if let id = jsonBody["id"].string,
+                                                let name = jsonBody["name"].string {
+                                                let userProfile = UserProfile(id: id, displayName: name, provider: self.name)
+                                                onSuccess(userProfile)
+                                                return
+                                            }
                                         }
                                     }
                                     catch {
@@ -141,8 +168,12 @@ public class CredentialsFacebook : CredentialsPluginProtocol {
         }
         else {
             // Log in
+            var scopeParameters = ""
+            if let scope = scope {
+                scopeParameters = "&scope=" + scope
+            }
             do {
-                try response.redirect("https://www.facebook.com/dialog/oauth?client_id=\(clientId)&redirect_uri=\(callbackUrl)&response_type=code")
+                try response.redirect("https://www.facebook.com/dialog/oauth?client_id=\(clientId)&redirect_uri=\(callbackUrl)&response_type=code\(scopeParameters)")
                 inProgress()
             }
             catch {
