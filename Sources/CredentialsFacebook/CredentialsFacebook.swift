@@ -130,19 +130,13 @@ public class CredentialsFacebook : CredentialsPluginProtocol {
                                         body = Data()
                                         try profileResponse.readAllData(into: &body)
                                         jsonBody = JSON(data: body)
-                                        if let delegate = self.delegate,
-                                            let dictionary = jsonBody.dictionaryObject,
-                                            let userProfile = delegate.identityProviderDictionaryToUserProfile(dictionary) {
+                                        if let dictionary = jsonBody.dictionaryObject,
+                                            let userProfile = self.createUserProfile(from: dictionary) {
+                                            if let delegate = self.delegate {
+                                                delegate.update(userProfile: userProfile, from: dictionary)
+                                            }
                                             onSuccess(userProfile)
                                             return
-                                        }
-                                        else {
-                                            if let id = jsonBody["id"].string,
-                                                let name = jsonBody["name"].string {
-                                                let userProfile = UserProfile(id: id, displayName: name, provider: self.name)
-                                                onSuccess(userProfile)
-                                                return
-                                            }
                                         }
                                     }
                                     catch {
@@ -181,4 +175,32 @@ public class CredentialsFacebook : CredentialsPluginProtocol {
             }
         }
     }
+    
+    private func createUserProfile(from facebookData: [String:Any]) -> UserProfile? {
+        if let id = facebookData["id"] as? String,
+            let name = facebookData["name"] as? String {
+            
+            var userEmails: [UserProfile.UserProfileEmail]? = nil
+            if let email = facebookData["email"] as? String {
+                let userEmail = UserProfile.UserProfileEmail(value: email, type: "")
+                userEmails = [userEmail]
+            }
+            
+            var userName: UserProfile.UserProfileName? = nil
+            if let familyName = facebookData["familyName"] as? String,
+                let givenName = facebookData["givenName"] as? String {
+                let middleName = (facebookData["middleName"] as? String) ?? ""
+                userName = UserProfile.UserProfileName(familyName: familyName, givenName: givenName, middleName: middleName)
+            }
+            
+            var userPhotos: [UserProfile.UserProfilePhoto]? = nil
+            if let photo = facebookData["picture"] as? String {
+                let userPhoto = UserProfile.UserProfilePhoto(photo)
+                userPhotos = [userPhoto]
+            }
+            return UserProfile(id: id, displayName: name, provider: self.name, name: userName, emails: userEmails, photos: userPhotos)
+        }
+        return nil
+    }
+
 }
