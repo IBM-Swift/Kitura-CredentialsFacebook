@@ -26,7 +26,7 @@ import Foundation
 // MARK CredentialsFacebookToken
 
 /// Authentication using Facebook OAuth token.
-public class CredentialsFacebookToken : CredentialsPluginProtocol {
+public class CredentialsFacebookToken: CredentialsPluginProtocol {
 
     /// The name of the plugin.
     public var name: String {
@@ -57,11 +57,11 @@ public class CredentialsFacebookToken : CredentialsPluginProtocol {
     ///                     the authentication token in the request.
     /// - Parameter inProgress: The closure to invoke to cause a redirect to the login page in the
     ///                     case of redirecting authentication.
-    public func authenticate (request: RouterRequest, response: RouterResponse,
-                              options: [String:Any], onSuccess: @escaping (UserProfile) -> Void,
-                              onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
-                              onPass: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
-                              inProgress: @escaping () -> Void) {
+    public func authenticate(request: RouterRequest, response: RouterResponse,
+                             options: [String:Any], onSuccess: @escaping (UserProfile) -> Void,
+                             onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
+                             onPass: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
+                             inProgress: @escaping () -> Void) {
         if let type = request.headers["X-token-type"], type == name {
             if let token = request.headers["access_token"] {
                 #if os(Linux)
@@ -90,9 +90,11 @@ public class CredentialsFacebookToken : CredentialsPluginProtocol {
                             var body = Data()
                             try response.readAllData(into: &body)
                             let jsonBody = JSON(data: body)
-                            if let id = jsonBody["id"].string,
-                                let name = jsonBody["name"].string {
-                                let userProfile = UserProfile(id: id, displayName: name, provider: self.name)
+                            if let dictionary = jsonBody.dictionaryObject,
+                                let userProfile = createUserProfile(from: dictionary, for: self.name) {
+                                if let delegate = options["userProfileDelegate"] as? UserProfileDelegate {
+                                    delegate.update(userProfile: userProfile, from: dictionary)
+                                }
                                 let newCacheElement = BaseCacheElement(profile: userProfile)
                                 #if os(Linux)
                                     let key = NSString(string: token)
