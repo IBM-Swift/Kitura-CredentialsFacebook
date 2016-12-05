@@ -45,7 +45,7 @@ credentials.register(fbCredentials)
 **Where:**
    - *fbClientId* is the App ID of your app in the Facebook Developer dashboard
    - *fbClientSecret* is the App Secret of your app in the Facebook Developer dashboard
-   - *options* is an optional dictionary ([String:Any]) of Facebook authentication options listed in `CredentialsFacebookOptions`.
+   - *options* is an optional dictionary ([String:Any]) of Facebook authentication options whose keys are listed in `CredentialsFacebookOptions`.
 
 **Note:** The *callbackUrl* parameter above is used to tell the Facebook web login page where the user's browser should be redirected when the login is successful. It should be a URL handled by the server you are writing.
 Specify where to redirect non-authenticated requests:
@@ -89,7 +89,7 @@ let credentials = Credentials(options: options)
 let fbCredentials = CredentialsFacebookToken()
 ```
 **Where:**
-- *options* is an optional dictionary ([String:Any]) of Facebook authentication options listed in `CredentialsFacebookOptions`.
+- *options* is an optional dictionary ([String:Any]) of Facebook authentication options whose keys are listed in `CredentialsFacebookOptions`.
 
 Now register the plugin:
 
