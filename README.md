@@ -22,23 +22,30 @@ A complete sample can be found in [Kitura-Credentials-Sample](https://github.com
 <br>
 
 First set up the session:
+
 ```swift
 import KituraSession
 
 router.all(middleware: Session(secret: "Very very secret..."))
 ```
 Create an instance of `CredentialsFacebook` plugin and register it with `Credentials` framework:
+
 ```swift
 import Credentials
 import CredentialsFacebook
 
 let credentials = Credentials()
-let fbCredentials = CredentialsFacebook(clientId: fbClientId, clientSecret: fbClientSecret, callbackUrl: serverUrl + "/login/facebook/callback")
+let fbCredentials = CredentialsFacebook(clientId: fbClientId,
+                                        clientSecret: fbClientSecret,
+                                        callbackUrl: serverUrl + "/login/facebook/callback",
+                                        options: options)
 credentials.register(fbCredentials)
 ```
+
 **Where:**
    - *fbClientId* is the App ID of your app in the Facebook Developer dashboard
    - *fbClientSecret* is the App Secret of your app in the Facebook Developer dashboard
+   - *options* is an optional dictionary ([String:Any]) of Facebook authentication options listed in `CredentialsFacebookOptions`.
 
 **Note:** The *callbackUrl* parameter above is used to tell the Facebook web login page where the user's browser should be redirected when the login is successful. It should be a URL handled by the server you are writing.
 Specify where to redirect non-authenticated requests:
@@ -78,10 +85,14 @@ First create an instance of `Credentials` and an instance of `CredentialsFaceboo
 import Credentials
 import CredentialsFacebook
 
-let credentials = Credentials()
+let credentials = Credentials(options: options)
 let fbCredentials = CredentialsFacebookToken()
 ```
+**Where:**
+- *options* is an optional dictionary ([String:Any]) of Facebook authentication options listed in `CredentialsFacebookOptions`.
+
 Now register the plugin:
+
 ```swift
 credentials.register(fbCredentials)
 ```
@@ -92,6 +103,7 @@ Connect `credentials` middleware to post requests:
 router.post("/collection/:new", middleware: credentials)
 ```
 If the authentication is successful, `request.userProfile` will contain user profile information received from Facebook:
+
 ```swift
 router.post("/collection/:new") {request, response, next in
   ...
@@ -105,6 +117,7 @@ router.post("/collection/:new") {request, response, next in
 
 ### Client side
 The client needs to put [Facebook access token](https://developers.facebook.com/docs/facebook-login/access-tokens) in request's `access_token` HTTP header field, and "FacebookToken" in `X-token-type` field:
+
 ```swift
 let urlRequest = NSMutableURLRequest(URL: NSURL(string: "http://\(serverUrl)/collection/\(name)"))
 urlRequest.HTTPMethod = "POST"

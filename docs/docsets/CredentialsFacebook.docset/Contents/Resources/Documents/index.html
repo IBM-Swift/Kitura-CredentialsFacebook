@@ -51,6 +51,14 @@
               </li>
             </ul>
           </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/CredentialsFacebookOptions.html">CredentialsFacebookOptions</a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </nav>
       <article class="main-content">
@@ -84,24 +92,28 @@
 <p>A complete sample can be found in <a href="https://github.com/IBM-Swift/Kitura-Credentials-Sample">Kitura-Credentials-Sample</a>.
 <br></p>
 
-<p>First set up the session:
-&ldquo;`swift
-import KituraSession</p>
+<p>First set up the session:</p>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">KituraSession</span>
 
-<p>router.all(middleware: Session(secret: <q>Very very secret&hellip;</q>))
-<code>
-Create an instance of `CredentialsFacebook` plugin and register it with `Credentials` framework:
-</code>swift
-import Credentials
-import CredentialsFacebook</p>
+<span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="nv">middleware</span><span class="p">:</span> <span class="kt">Session</span><span class="p">(</span><span class="nv">secret</span><span class="p">:</span> <span class="s">"Very very secret..."</span><span class="p">))</span>
+</code></pre>
 
-<p>let credentials = Credentials()
-let fbCredentials = CredentialsFacebook(clientId: fbClientId, clientSecret: fbClientSecret, callbackUrl: serverUrl + <q>/login/facebook/callback</q>)
-credentials.register(fbCredentials)
-&rdquo;`
-<strong>Where:</strong>
+<p>Create an instance of <code>CredentialsFacebook</code> plugin and register it with <code>Credentials</code> framework:</p>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Credentials</span>
+<span class="kd">import</span> <span class="kt">CredentialsFacebook</span>
+
+<span class="k">let</span> <span class="nv">credentials</span> <span class="o">=</span> <span class="kt">Credentials</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">fbCredentials</span> <span class="o">=</span> <span class="kt">CredentialsFacebook</span><span class="p">(</span><span class="nv">clientId</span><span class="p">:</span> <span class="n">fbClientId</span><span class="p">,</span>
+                                        <span class="nv">clientSecret</span><span class="p">:</span> <span class="n">fbClientSecret</span><span class="p">,</span>
+                                        <span class="nv">callbackUrl</span><span class="p">:</span> <span class="n">serverUrl</span> <span class="o">+</span> <span class="s">"/login/facebook/callback"</span><span class="p">,</span>
+                                        <span class="nv">options</span><span class="p">:</span> <span class="n">options</span><span class="p">)</span>
+<span class="n">credentials</span><span class="o">.</span><span class="nf">register</span><span class="p">(</span><span class="n">fbCredentials</span><span class="p">)</span>
+</code></pre>
+
+<p><strong>Where:</strong>
    - <em>fbClientId</em> is the App ID of your app in the Facebook Developer dashboard
-   - <em>fbClientSecret</em> is the App Secret of your app in the Facebook Developer dashboard</p>
+   - <em>fbClientSecret</em> is the App Secret of your app in the Facebook Developer dashboard
+   - <em>options</em> is an optional dictionary ([String:Any]) of Google authentication options listed in <code>CredentialsGoogleOptions</code>.</p>
 
 <p><strong>Note:</strong> The <em>callbackUrl</em> parameter above is used to tell the Facebook web login page where the user&rsquo;s browser should be redirected when the login is successful. It should be a URL handled by the server you are writing.
 Specify where to redirect non-authenticated requests:
@@ -134,47 +146,49 @@ credentials.options[&quot;failureRedirect&quot;] = &quot;/login/facebook&quot;
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Credentials</span>
 <span class="kd">import</span> <span class="kt">CredentialsFacebook</span>
 
-<span class="k">let</span> <span class="nv">credentials</span> <span class="o">=</span> <span class="kt">Credentials</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">credentials</span> <span class="o">=</span> <span class="kt">Credentials</span><span class="p">(</span><span class="nv">options</span><span class="p">:</span> <span class="n">options</span><span class="p">)</span>
 <span class="k">let</span> <span class="nv">fbCredentials</span> <span class="o">=</span> <span class="kt">CredentialsFacebookToken</span><span class="p">()</span>
 </code></pre>
 
-<p>Now register the plugin:
-<code>swift
-credentials.register(fbCredentials)
-</code></p>
+<p><strong>Where:</strong>
+- <em>options</em> is an optional dictionary ([String:Any]) of Google authentication options listed in <code>CredentialsFacebookOptions</code>.</p>
+
+<p>Now register the plugin:</p>
+<pre class="highlight swift"><code><span class="n">credentials</span><span class="o">.</span><span class="nf">register</span><span class="p">(</span><span class="n">fbCredentials</span><span class="p">)</span>
+</code></pre>
 
 <p>Connect <code>credentials</code> middleware to post requests:</p>
 <pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/collection/:new"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="n">credentials</span><span class="p">)</span>
 </code></pre>
 
-<p>If the authentication is successful, <code>request.userProfile</code> will contain user profile information received from Facebook:
-<code>swift
-router.post(&quot;/collection/:new&quot;) {request, response, next in
-  ...
-  let profile = request.userProfile
-  let userId = profile.id
-  let userName = profile.displayName
-  ...
-  next()
-}
-</code></p>
+<p>If the authentication is successful, <code>request.userProfile</code> will contain user profile information received from Facebook:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/collection/:new"</span><span class="p">)</span> <span class="p">{</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+  <span class="o">...</span>
+  <span class="k">let</span> <span class="nv">profile</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">userProfile</span>
+  <span class="k">let</span> <span class="nv">userId</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">id</span>
+  <span class="k">let</span> <span class="nv">userName</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">displayName</span>
+  <span class="o">...</span>
+  <span class="nf">next</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
 <a href='#client-side' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h3 id='client-side'>Client side</h3>
 
-<p>The client needs to put <a href="https://developers.facebook.com/docs/facebook-login/access-tokens">Facebook access token</a> in request&rsquo;s <code>access_token</code> HTTP header field, and <q>FacebookToken</q> in <code>X-token-type</code> field:
-&ldquo;`swift
-let urlRequest = NSMutableURLRequest(URL: NSURL(string: <q>http://\(serverUrl)/collection/\(name)</q>))
-urlRequest.HTTPMethod = <q>POST</q>
-urlRequest.HTTPBody = &hellip;</p>
+<p>The client needs to put <a href="https://developers.facebook.com/docs/facebook-login/access-tokens">Facebook access token</a> in request&rsquo;s <code>access_token</code> HTTP header field, and <q>FacebookToken</q> in <code>X-token-type</code> field:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">urlRequest</span> <span class="o">=</span> <span class="kt">NSMutableURLRequest</span><span class="p">(</span><span class="kt">URL</span><span class="p">:</span> <span class="kt">NSURL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"http://</span><span class="se">\(</span><span class="n">serverUrl</span><span class="se">)</span><span class="s">/collection/</span><span class="se">\(</span><span class="n">name</span><span class="se">)</span><span class="s">"</span><span class="p">))</span>
+<span class="n">urlRequest</span><span class="o">.</span><span class="kt">HTTPMethod</span> <span class="o">=</span> <span class="s">"POST"</span>
+<span class="n">urlRequest</span><span class="o">.</span><span class="kt">HTTPBody</span> <span class="o">=</span> <span class="o">...</span>
 
-<p>urlRequest.addValue(FBSDKAccessToken.currentAccessToken().tokenString, forHTTPHeaderField: <q>access_token</q>)
-urlRequest.addValue(<q>FacebookToken</q>, forHTTPHeaderField: <q>X-token-type</q>)            </p>
+<span class="n">urlRequest</span><span class="o">.</span><span class="nf">addValue</span><span class="p">(</span><span class="kt">FBSDKAccessToken</span><span class="o">.</span><span class="nf">currentAccessToken</span><span class="p">()</span><span class="o">.</span><span class="n">tokenString</span><span class="p">,</span> <span class="nv">forHTTPHeaderField</span><span class="p">:</span> <span class="s">"access_token"</span><span class="p">)</span>
+<span class="n">urlRequest</span><span class="o">.</span><span class="nf">addValue</span><span class="p">(</span><span class="s">"FacebookToken"</span><span class="p">,</span> <span class="nv">forHTTPHeaderField</span><span class="p">:</span> <span class="s">"X-token-type"</span><span class="p">)</span>            
 
-<p>Alamofire.request(urlRequest).responseJSON {response in
-  &hellip;
-}</p>
-<pre class="highlight plaintext"><code>## License
-This library is licensed under Apache 2.0. Full license text is available in [LICENSE](LICENSE.txt).
+<span class="kt">Alamofire</span><span class="o">.</span><span class="nf">request</span><span class="p">(</span><span class="n">urlRequest</span><span class="p">)</span><span class="o">.</span><span class="n">responseJSON</span> <span class="p">{</span><span class="n">response</span> <span class="k">in</span>
+  <span class="o">...</span>
+<span class="p">}</span>
+
 </code></pre>
+<a href='#license' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='license'>License</h2>
+
+<p>This library is licensed under Apache 2.0. Full license text is available in <a href="LICENSE.txt">LICENSE</a>.</p>
 
           </div>
         </section>
@@ -183,7 +197,7 @@ This library is licensed under Apache 2.0. Full license text is available in [LI
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-11-29)</p>
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-12-05)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

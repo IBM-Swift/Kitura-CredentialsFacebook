@@ -79,7 +79,11 @@ public class CredentialsFacebookToken: CredentialsPluginProtocol {
                 requestOptions.append(.schema("https://"))
                 requestOptions.append(.hostname("graph.facebook.com"))
                 requestOptions.append(.method("GET"))
-                requestOptions.append(.path("/me?access_token=\(token)"))
+                var pathFields = ""
+                if let fields = options[CredentialsFacebookOptions.fields] as? String {
+                    pathFields = "&fields=" + fields
+                }
+                requestOptions.append(.path("/me?access_token=\(token)\(pathFields)"))
                 var headers = [String:String]()
                 headers["Accept"] = "application/json"
                 requestOptions.append(.headers(headers))
@@ -92,7 +96,7 @@ public class CredentialsFacebookToken: CredentialsPluginProtocol {
                             let jsonBody = JSON(data: body)
                             if let dictionary = jsonBody.dictionaryObject,
                                 let userProfile = createUserProfile(from: dictionary, for: self.name) {
-                                if let delegate = options["userProfileDelegate"] as? UserProfileDelegate {
+                                if let delegate = options[CredentialsFacebookOptions.userProfileDelegate] as? UserProfileDelegate {
                                     delegate.update(userProfile: userProfile, from: dictionary)
                                 }
                                 let newCacheElement = BaseCacheElement(profile: userProfile)

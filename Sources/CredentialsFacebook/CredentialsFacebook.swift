@@ -71,9 +71,9 @@ public class CredentialsFacebook: CredentialsPluginProtocol {
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.callbackUrl = callbackUrl
-        scope = options?["scope"] as? String
-        fields = options?["fields"] as? String
-        delegate = options?["userProfileDelegate"] as? UserProfileDelegate
+        scope = options?[CredentialsFacebookOptions.scope] as? String
+        fields = options?[CredentialsFacebookOptions.fields] as? String
+        delegate = options?[CredentialsFacebookOptions.userProfileDelegate] as? UserProfileDelegate
     }
     
     /// Authenticate incoming request using Facebook web login with OAuth.

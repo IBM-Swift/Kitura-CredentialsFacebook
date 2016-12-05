@@ -27,14 +27,16 @@ func createUserProfile(from facebookData: [String:Any], for provider: String) ->
         }
         
         var userName: UserProfile.UserProfileName? = nil
-        if let familyName = facebookData["familyName"] as? String,
-            let givenName = facebookData["givenName"] as? String {
-            let middleName = (facebookData["middleName"] as? String) ?? ""
+        if let familyName = facebookData["last_name"] as? String,
+            let givenName = facebookData["first_name"] as? String {
+            let middleName = (facebookData["middle_name"] as? String) ?? ""
             userName = UserProfile.UserProfileName(familyName: familyName, givenName: givenName, middleName: middleName)
         }
         
         var userPhotos: [UserProfile.UserProfilePhoto]? = nil
-        if let photo = facebookData["picture"] as? String {
+        if let photos = facebookData["picture"] as? [String:Any],
+            let data = photos["data"] as? [String:Any],
+            let photo = data["url"] as? String {
             let userPhoto = UserProfile.UserProfilePhoto(photo)
             userPhotos = [userPhoto]
         }
