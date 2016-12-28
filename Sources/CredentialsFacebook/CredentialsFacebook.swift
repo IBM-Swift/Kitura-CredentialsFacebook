@@ -50,9 +50,9 @@ public class CredentialsFacebook: CredentialsPluginProtocol {
     /// User profile cache.
     public var usersCache: NSCache<NSString, BaseCacheElement>?
     
-    private let fields: String?
+    private let fields: [String]?
     
-    private let scope: String?
+    private let scope: [String]?
     
     private var delegate: UserProfileDelegate?
 
@@ -71,8 +71,8 @@ public class CredentialsFacebook: CredentialsPluginProtocol {
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.callbackUrl = callbackUrl
-        scope = options?[CredentialsFacebookOptions.scope] as? String
-        fields = options?[CredentialsFacebookOptions.fields] as? String
+        scope = options?[CredentialsFacebookOptions.scope] as? [String]
+        fields = options?[CredentialsFacebookOptions.fields] as? [String]
         delegate = options?[CredentialsFacebookOptions.userProfileDelegate] as? UserProfileDelegate
     }
     
@@ -116,8 +116,8 @@ public class CredentialsFacebook: CredentialsPluginProtocol {
                             requestOptions.append(.hostname("graph.facebook.com"))
                             requestOptions.append(.method("GET"))
                             var pathFields = ""
-                            if let fields = self.fields {
-                                pathFields = "&fields=" + fields
+                            if let fields = self.fields, fields.count > 0 {
+                                pathFields = "&fields=" + fields.joined(separator: ",")
                             }
                             requestOptions.append(.path("/me?access_token=\(token)\(pathFields)"))
                             headers = [String:String]()
@@ -163,8 +163,8 @@ public class CredentialsFacebook: CredentialsPluginProtocol {
         else {
             // Log in
             var scopeParameters = ""
-            if let scope = scope {
-                scopeParameters = "&scope=" + scope
+            if let scope = scope, scope.count > 0 {
+                scopeParameters = "&scope=" + scope.joined(separator: ",")
             }
             do {
                 try response.redirect("https://www.facebook.com/dialog/oauth?client_id=\(clientId)&redirect_uri=\(callbackUrl)&response_type=code\(scopeParameters)")
