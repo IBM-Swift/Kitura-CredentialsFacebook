@@ -19,9 +19,11 @@
 /// A list of options for authentication with Facebook.
 public struct CredentialsFacebookOptions {
     /// [Facebook permissions](https://developers.facebook.com/docs/facebook-login/permissions)
+    /// The value for this key will be an array of Strings found at the above url.
     public static let scope = "scope"
     /// An implementation of `Credentials.UserProfileDelegate` to update user profile.
     public static let userProfileDelegate = "userProfileDelegate"
     /// A list of [fields](https://developers.facebook.com/docs/graph-api/reference/user) to ask for in authentication.
+    /// The value for this key will be an array of Strings found at the above url.
     public static let fields = "fields"
 }
