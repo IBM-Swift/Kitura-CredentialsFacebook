@@ -16,7 +16,7 @@
 
 // MARK CredentialsFacebookOptions
 
-/// A list of options for authentication with Facebook.
+/// A list of keys to be used in options dictionary for authentication with Facebook.
 public struct CredentialsFacebookOptions {
     /// [Facebook permissions](https://developers.facebook.com/docs/facebook-login/permissions)
     /// The value of scope should be either a String of comma-separated requsted scopes, or an array 
