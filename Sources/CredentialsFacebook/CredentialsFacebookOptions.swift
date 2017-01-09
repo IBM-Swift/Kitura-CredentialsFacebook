@@ -19,9 +19,13 @@
 /// A list of options for authentication with Facebook.
 public struct CredentialsFacebookOptions {
     /// [Facebook permissions](https://developers.facebook.com/docs/facebook-login/permissions)
+    /// The value of scope should be either a String of comma-separated requsted scopes, or an array 
+    /// of String with the requested scopes.
     public static let scope = "scope"
     /// An implementation of `Credentials.UserProfileDelegate` to update user profile.
     public static let userProfileDelegate = "userProfileDelegate"
     /// A list of [fields](https://developers.facebook.com/docs/graph-api/reference/user) to ask for in authentication.
+    /// The value of fields should be either a String of comma-separated requsted fields, or an array
+    /// of String with the requested fields.
     public static let fields = "fields"
 }
