@@ -71,8 +71,18 @@ public class CredentialsFacebook: CredentialsPluginProtocol {
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.callbackUrl = callbackUrl
-        scope = options?[CredentialsFacebookOptions.scope] as? String
-        fields = options?[CredentialsFacebookOptions.fields] as? String
+        if let scope = options?[CredentialsFacebookOptions.scope] as? [String] {
+            self.scope = scope.joined(separator: ",")
+        }
+        else {
+           scope = options?[CredentialsFacebookOptions.scope] as? String
+        }
+        if let fields = options?[CredentialsFacebookOptions.fields] as? [String] {
+            self.fields = fields.joined(separator: ",")
+        }
+        else {
+            fields = options?[CredentialsFacebookOptions.fields] as? String
+        }
         delegate = options?[CredentialsFacebookOptions.userProfileDelegate] as? UserProfileDelegate
     }
     

@@ -83,6 +83,9 @@ public class CredentialsFacebookToken: CredentialsPluginProtocol {
                 if let fields = options[CredentialsFacebookOptions.fields] as? String {
                     pathFields = "&fields=" + fields
                 }
+                else if let fields = options[CredentialsFacebookOptions.fields] as? [String] {
+                    pathFields = "&fields=" + fields.joined(separator: ",")
+                }
                 requestOptions.append(.path("/me?access_token=\(token)\(pathFields)"))
                 var headers = [String:String]()
                 headers["Accept"] = "application/json"
