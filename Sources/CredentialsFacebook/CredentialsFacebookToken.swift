@@ -51,7 +51,7 @@ public class CredentialsFacebookToken: CredentialsPluginProtocol {
     }
     /// Initialize a `CredentialsFacebookToken` instance.
     ///
-    /// - Parameter options: A dictionary of plugin specific options.
+    /// - Parameter options: A dictionary of plugin specific options. The keys are defined in `CredentialsFacebookOptions`.
     public init (options: [String:Any]?=nil) {
         if let fields = options?[CredentialsFacebookOptions.fields] as? [String] {
             self.fields = fields.joined(separator: ",")

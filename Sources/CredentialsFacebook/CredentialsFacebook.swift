@@ -66,7 +66,7 @@ public class CredentialsFacebook: CredentialsPluginProtocol {
     /// - Parameter clientId: The App ID of the app in the Facebook Developer dashboard.
     /// - Parameter clientSecret: The App Secret of the app in the Facebook Developer dashboard.
     /// - Parameter callbackUrl: The URL that Facebook redirects back to.
-    /// - Parameter options: A dictionary of plugin specific options.
+    /// - Parameter options: A dictionary of plugin specific options. The keys are defined in `CredentialsFacebookOptions`.
     public init(clientId: String, clientSecret: String, callbackUrl: String, options: [String:Any]?=nil) {
         self.clientId = clientId
         self.clientSecret = clientSecret

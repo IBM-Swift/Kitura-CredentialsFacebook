@@ -85,8 +85,8 @@ First create an instance of `Credentials` and an instance of `CredentialsFaceboo
 import Credentials
 import CredentialsFacebook
 
-let credentials = Credentials(options: options)
-let fbCredentials = CredentialsFacebookToken()
+let credentials = Credentials()
+let fbCredentials = CredentialsFacebookToken(options: options)
 ```
 **Where:**
 - *options* is an optional dictionary ([String:Any]) of Facebook authentication options whose keys are listed in `CredentialsFacebookOptions`.
