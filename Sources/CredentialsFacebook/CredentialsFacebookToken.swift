@@ -41,8 +41,26 @@ public class CredentialsFacebookToken: CredentialsPluginProtocol {
     /// User profile cache.
     public var usersCache: NSCache<NSString, BaseCacheElement>?
 
+    private let fields: String?
+    
+    private var delegate: UserProfileDelegate?
+    
+    /// A delegate for `UserProfile` manipulation.
+    public var userProfileDelegate: UserProfileDelegate? {
+        return delegate
+    }
     /// Initialize a `CredentialsFacebookToken` instance.
-    public init () {}
+    ///
+    /// - Parameter options: A dictionary of plugin specific options.
+    public init (options: [String:Any]?=nil) {
+        if let fields = options?[CredentialsFacebookOptions.fields] as? [String] {
+            self.fields = fields.joined(separator: ",")
+        }
+        else {
+            fields = options?[CredentialsFacebookOptions.fields] as? String
+        }
+        delegate = options?[CredentialsFacebookOptions.userProfileDelegate] as? UserProfileDelegate
+    }
 
     /// Authenticate incoming request using Facebook OAuth token.
     ///
@@ -80,11 +98,8 @@ public class CredentialsFacebookToken: CredentialsPluginProtocol {
                 requestOptions.append(.hostname("graph.facebook.com"))
                 requestOptions.append(.method("GET"))
                 var pathFields = ""
-                if let fields = options[CredentialsFacebookOptions.fields] as? String {
+                if let fields = fields {
                     pathFields = "&fields=" + fields
-                }
-                else if let fields = options[CredentialsFacebookOptions.fields] as? [String] {
-                    pathFields = "&fields=" + fields.joined(separator: ",")
                 }
                 requestOptions.append(.path("/me?access_token=\(token)\(pathFields)"))
                 var headers = [String:String]()
@@ -99,7 +114,7 @@ public class CredentialsFacebookToken: CredentialsPluginProtocol {
                             let jsonBody = JSON(data: body)
                             if let dictionary = jsonBody.dictionaryObject,
                                 let userProfile = createUserProfile(from: dictionary, for: self.name) {
-                                if let delegate = options[CredentialsFacebookOptions.userProfileDelegate] as? UserProfileDelegate {
+                                if let delegate = self.delegate {
                                     delegate.update(userProfile: userProfile, from: dictionary)
                                 }
                                 let newCacheElement = BaseCacheElement(profile: userProfile)
