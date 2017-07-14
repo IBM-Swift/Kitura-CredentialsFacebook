@@ -82,6 +82,8 @@ public class CredentialsFacebookToken: CredentialsPluginProtocol {
                              inProgress: @escaping () -> Void) {
         if let type = request.headers["X-token-type"], type == name {
             if let token = request.headers["access_token"] {
+                // Store the token so it can be reused later.
+                request.session?["facebookAccessToken"] = JSON(token)
                 #if os(Linux)
                     let key = NSString(string: token)
                 #else
