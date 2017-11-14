@@ -1,5 +1,5 @@
 test:
-  image: ibmcom/swift-ubuntu:4.0
+  image: ibmcom/swift-ubuntu:4.0.2
   volumes:
       - .:/Kitura-CredentialsFacebook
   command: bash -c "cd /Kitura-CredentialsFacebook && swift package clean && swift build"
