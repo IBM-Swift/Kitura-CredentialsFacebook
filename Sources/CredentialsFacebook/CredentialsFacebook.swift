@@ -121,6 +121,8 @@ public class CredentialsFacebook: CredentialsPluginProtocol {
                         try fbResponse.readAllData(into: &body)
                         var jsonBody = JSON(data: body)
                         if let token = jsonBody["access_token"].string {
+                            // Store the token so it can be reused later.
+                            request.session?["facebookAccessToken"] = JSON(token)
                             requestOptions = []
                             requestOptions.append(.schema("https://"))
                             requestOptions.append(.hostname("graph.facebook.com"))
