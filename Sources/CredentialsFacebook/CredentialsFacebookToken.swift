@@ -18,9 +18,6 @@ import Kitura
 import KituraNet
 import LoggerAPI
 import Credentials
-
-import SwiftyJSON
-
 import Foundation
 
 // MARK CredentialsFacebookToken
@@ -118,9 +115,8 @@ public class CredentialsFacebookToken: CredentialsPluginProtocol {
                         do {
                             var body = Data()
                             try response.readAllData(into: &body)
-                            let jsonBody = JSON(data: body)
-                            if let dictionary = jsonBody.dictionaryObject,
-                                let userProfile = createUserProfile(from: dictionary, for: self.name) {
+                            if let dictionary = try JSONSerialization.jsonObject(with: body, options: []) as? [String : Any],
+                            let userProfile = createUserProfile(from: dictionary, for: self.name) {
                                 if let delegate = self.delegate ?? options[CredentialsFacebookOptions.userProfileDelegate] as? UserProfileDelegate{
                                     delegate.update(userProfile: userProfile, from: dictionary)
                                 }

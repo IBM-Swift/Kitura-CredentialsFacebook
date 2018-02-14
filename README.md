@@ -16,7 +16,7 @@ Plugins for [Kitura-Credentials](https://github.com/IBM-Swift/Kitura-Credentials
 * [License](#license)
 
 ## Swift version
-The latest version of Kitura-CredentialsFacebook requires **Swift 4.0**. You can download this version of the Swift binaries by following this [link](https://swift.org/download/). Compatibility with other Swift versions is not guaranteed.
+The latest version of Kitura-CredentialsFacebook requires **Swift 4.0** or newer. You can download this version of the Swift binaries by following this [link](https://swift.org/download/). Compatibility with other Swift versions is not guaranteed.
 
 ## Example of Facebook web login
 A complete sample can be found in [Kitura-Credentials-Sample](https://github.com/IBM-Swift/Kitura-Credentials-Sample).
