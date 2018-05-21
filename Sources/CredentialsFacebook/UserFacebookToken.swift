@@ -23,21 +23,17 @@ import Foundation
 import KituraContracts
 import TypeDecoder
 
-public final class UserFacebookToken: TypedCredentialsPluginProtocol, Decodable {
+public protocol UserFacebookToken: AnyObject, TypedCredentialsPluginProtocol, Decodable {
     
-    public static var options: [String : Any] = [:]
-    
-    
+    static var usersCache: NSCache<NSString, Self> { get }
+
+}
+
+extension UserFacebookToken {
+
     public static func describe() -> String {
         return "Facebook token authenticated"
     }
-    
-    public static var usersCache = NSCache<NSString, UserFacebookToken>()
-    
-    public static var redirecting: Bool = false
-    
-    /// The name of the plugin.
-    public static let pluginName: String = "FacebookToken"
     
     /// Authenticate incoming request using Facebook OAuth token.
     ///
@@ -52,15 +48,15 @@ public final class UserFacebookToken: TypedCredentialsPluginProtocol, Decodable 
     ///                     the authentication token in the request.
     /// - Parameter inProgress: The closure to invoke to cause a redirect to the login page in the
     ///                     case of redirecting authentication.
-    public static func authenticate(request: RouterRequest, response: RouterResponse, onSuccess: @escaping (UserFacebookToken) -> Void, onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void, onPass: @escaping (HTTPStatusCode?, [String : String]?) -> Void, inProgress: @escaping () -> Void) {
-        if let type = request.headers["X-token-type"], type == pluginName {
+    public static func authenticate(request: RouterRequest, response: RouterResponse, onSuccess: @escaping (Self) -> Void, onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void, onPass: @escaping (HTTPStatusCode?, [String : String]?) -> Void, inProgress: @escaping () -> Void) {
+        if let type = request.headers["X-token-type"], type == "FacebookToken" {
             if let token = request.headers["access_token"] {
                 #if os(Linux)
                 let key = NSString(string: token)
                 #else
                 let key = token as NSString
                 #endif
-                let cacheElement = usersCache.object(forKey: key)
+                let cacheElement = Self.usersCache.object(forKey: key)
                 if let cached = cacheElement {
                     onSuccess(cached)
                     return
@@ -85,13 +81,13 @@ public final class UserFacebookToken: TypedCredentialsPluginProtocol, Decodable 
                             // TODO: Remove JSONSerialization, only in for testing
                             let userDictionary = try JSONSerialization.jsonObject(with: body, options: []) as? [String : Any]
                             print("facebook response body: \(String(describing: userDictionary))")
-                            if let selfInstance = try? decoder.decode(UserFacebookToken.self, from: body) {
+                            if let selfInstance = try? decoder.decode(Self.self, from: body) {
                                 #if os(Linux)
                                 let key = NSString(string: token)
                                 #else
                                 let key = token as NSString
                                 #endif
-                                self.usersCache.setObject(selfInstance, forKey: key)
+                                Self.usersCache.setObject(selfInstance, forKey: key)
                                 onSuccess(selfInstance)
                                 return
                             }
@@ -114,7 +110,7 @@ public final class UserFacebookToken: TypedCredentialsPluginProtocol, Decodable 
     
     private static func decodeFields() -> String {
         var decodedString = [String]()
-        if let fieldsInfo = try? TypeDecoder.decode(UserFacebookToken.self) {
+        if let fieldsInfo = try? TypeDecoder.decode(Self.self) {
             if case .keyed(_, let dict) = fieldsInfo {
                 for (key, _) in dict {
                     decodedString.append(key)
@@ -124,8 +120,4 @@ public final class UserFacebookToken: TypedCredentialsPluginProtocol, Decodable 
         return decodedString.joined(separator: ",")
     }
     
-    public let id: String
-    
-    public let name: String
-
 }
