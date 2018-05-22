@@ -23,14 +23,33 @@ import Foundation
 import KituraContracts
 import TypeDecoder
 
-public protocol UserFacebookToken: AnyObject, TypedCredentialsPluginProtocol, Decodable {
+public protocol UserFacebookToken: TypedCredentialsPluginProtocol, Decodable {
     
-    static var usersCache: NSCache<NSString, Self> { get }
+    var id: String { get }
+    
+    var name: String { get }
+    
+    static var usersCache: NSCache<NSString, FacebookCacheElement> { get }
 
 }
 
-extension UserFacebookToken {
+// MARK FacebookCacheElement
 
+/// The cache element for keeping facebook profile information.
+public class FacebookCacheElement {
+    /// The user profile information stored as `UserFacebookToken`.
+    public var userProfile: UserFacebookToken
+    
+    /// Initialize a `FacebookCacheElement`.
+    ///
+    /// - Parameter profile: the `UserFacebookToken` to store.
+    public init (profile: UserFacebookToken) {
+        userProfile = profile
+    }
+}
+
+extension UserFacebookToken {
+    
     public static func describe() -> String {
         return "Facebook token authenticated"
     }
@@ -57,8 +76,8 @@ extension UserFacebookToken {
                 let key = token as NSString
                 #endif
                 let cacheElement = Self.usersCache.object(forKey: key)
-                if let cached = cacheElement {
-                    onSuccess(cached)
+                if let cacheElement = cacheElement?.userProfile as? Self {
+                    onSuccess(cacheElement)
                     return
                 }
                 let fieldsInfo = decodeFields()
@@ -87,7 +106,7 @@ extension UserFacebookToken {
                                 #else
                                 let key = token as NSString
                                 #endif
-                                Self.usersCache.setObject(selfInstance, forKey: key)
+                                Self.usersCache.setObject(FacebookCacheElement(profile: selfInstance), forKey: key)
                                 onSuccess(selfInstance)
                                 return
                             }
