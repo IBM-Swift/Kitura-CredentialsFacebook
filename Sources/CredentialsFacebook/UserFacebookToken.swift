@@ -70,14 +70,16 @@ extension UserFacebookToken {
     public static func authenticate(request: RouterRequest, response: RouterResponse, onSuccess: @escaping (Self) -> Void, onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void, onPass: @escaping (HTTPStatusCode?, [String : String]?) -> Void, inProgress: @escaping () -> Void) {
         if let type = request.headers["X-token-type"], type == "FacebookToken" {
             if let token = request.headers["access_token"] {
+                print("using facebook token authentication")
                 #if os(Linux)
                 let key = NSString(string: token)
                 #else
                 let key = token as NSString
                 #endif
                 let cacheElement = Self.usersCache.object(forKey: key)
-                if let cacheElement = cacheElement?.userProfile as? Self {
-                    onSuccess(cacheElement)
+                if let cacheProfile = cacheElement?.userProfile as? Self {
+                    print("using cache: \(cacheProfile)")
+                    onSuccess(cacheProfile)
                     return
                 }
                 let fieldsInfo = decodeFields()
@@ -91,9 +93,11 @@ extension UserFacebookToken {
                 headers["Accept"] = "application/json"
                 requestOptions.append(.headers(headers))
                 
-                let req = HTTP.request(requestOptions) { response in
+                let fbreq = HTTP.request(requestOptions) { response in
+                    print("got facebook response: \(String(describing: response)) status code: \(response?.statusCode)")
                     if let response = response, response.statusCode == HTTPStatusCode.OK {
                         do {
+                            print("facebook response ok: \(response.statusCode)")
                             var body = Data()
                             try response.readAllData(into: &body)
                             let decoder = JSONDecoder()
@@ -116,7 +120,7 @@ extension UserFacebookToken {
                     }
                     onFailure(nil, nil)
                 }
-                req.end()
+                fbreq.end()
             }
             else {
                 onFailure(nil, nil)
