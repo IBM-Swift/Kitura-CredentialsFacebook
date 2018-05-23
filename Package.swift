@@ -28,7 +28,7 @@ let package = Package(
         )
     ],    
     dependencies: [
-         .package(url: "git@github.ibm.com:Andrew-Lees11/Kitura-Credentials.git", .branch("typeSafeMiddleware")),
+         .package(url: "https://github.com/IBM-Swift/Kitura-Credentials.git", .branch("typeSafeMiddleware")),
          .package(url: "https://github.com/IBM-Swift/TypeDecoder.git", from: "1.0.0"),
          
     ],
