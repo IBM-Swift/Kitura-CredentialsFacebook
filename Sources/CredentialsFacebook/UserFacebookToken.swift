@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corporation 2016, 2017
+ * Copyright IBM Corporation 2018
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,16 @@ public class FacebookCacheElement {
     /// - Parameter profile: the `UserFacebookToken` to store.
     public init (profile: UserFacebookToken) {
         userProfile = profile
+    }
+}
+
+public struct FacebookPicture: Codable {
+    var data: facebookData
+    struct facebookData: Codable {
+        var height: Int
+        var is_solhouette: Bool
+        var url: String
+        var width: Int
     }
 }
 
