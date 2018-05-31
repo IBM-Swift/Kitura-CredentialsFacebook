@@ -23,7 +23,7 @@ import Foundation
 import KituraContracts
 import TypeDecoder
 
-public protocol UserFacebookToken: TypedCredentialsPluginProtocol, Decodable {
+public protocol UserFacebookToken: TypeSafeCredentialsPluginProtocol, Codable {
     
     var id: String { get }
     
@@ -49,10 +49,6 @@ public class FacebookCacheElement {
 }
 
 extension UserFacebookToken {
-    
-    public static func describe() -> String {
-        return "Facebook token authenticated"
-    }
     
     /// Authenticate incoming request using Facebook OAuth token.
     ///
