@@ -49,13 +49,10 @@ public class FacebookCacheElement {
 }
 
 public struct FacebookPicture: Codable {
-    var data: facebookData
-    struct facebookData: Codable {
-        var height: Int
-        var is_solhouette: Bool
-        var url: String
-        var width: Int
+    public struct facebookData: Codable {
+        public var url: String
     }
+    public let data: facebookData
 }
 
 extension UserFacebookToken {
