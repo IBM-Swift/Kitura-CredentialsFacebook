@@ -19,7 +19,7 @@ import Foundation
 
 // A pre-constructed UserFacebookToken which has all the default fields you can request from facebook.
 public struct DefaultTypeSafeFacebookToken: UserFacebookToken {
-    
+
     public let id: String
     
     public let name: String

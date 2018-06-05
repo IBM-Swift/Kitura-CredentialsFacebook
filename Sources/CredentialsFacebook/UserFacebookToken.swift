@@ -23,7 +23,7 @@ import Foundation
 import KituraContracts
 import TypeDecoder
 
-public protocol UserFacebookToken: TypeSafeCredentialsPluginProtocol, Codable {
+public protocol UserFacebookToken: TypeSafeCredentials, Codable {
     
     var id: String { get }
     
@@ -57,6 +57,10 @@ public struct FacebookPicture: Codable {
 
 extension UserFacebookToken {
     
+    public var provider: String {
+        return "Facebook"
+    }
+    
     /// Authenticate incoming request using Facebook OAuth token.
     ///
     /// - Parameter request: The `RouterRequest` object used to get information
@@ -70,7 +74,7 @@ extension UserFacebookToken {
     ///                     the authentication token in the request.
     /// - Parameter inProgress: The closure to invoke to cause a redirect to the login page in the
     ///                     case of redirecting authentication.
-    public static func authenticate(request: RouterRequest, response: RouterResponse, onSuccess: @escaping (Self) -> Void, onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void, onPass: @escaping (HTTPStatusCode?, [String : String]?) -> Void, inProgress: @escaping () -> Void) {
+    public static func authenticate(request: RouterRequest, response: RouterResponse, onSuccess: @escaping (Self) -> Void, onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void, onSkip: @escaping (HTTPStatusCode?, [String : String]?) -> Void) {
         if let type = request.headers["X-token-type"], type == "FacebookToken" {
             if let token = request.headers["access_token"] {
                 print("using facebook token authentication")
@@ -130,7 +134,7 @@ extension UserFacebookToken {
             }
         }
         else {
-            onPass(nil, nil)
+            onSkip(nil, nil)
         }
     }
     
