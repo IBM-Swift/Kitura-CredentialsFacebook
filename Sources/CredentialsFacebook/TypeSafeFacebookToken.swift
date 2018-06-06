@@ -28,7 +28,7 @@ public protocol TypeSafeFacebookToken: TypeSafeCredentials {
     var id: String { get }
     
     var name: String { get }
-    
+        
 }
 
 // MARK FacebookCacheElement
@@ -131,16 +131,12 @@ extension TypeSafeFacebookToken {
                 requestOptions.append(.headers(headers))
                 
                 let fbreq = HTTP.request(requestOptions) { response in
-                    print("got facebook response: \(String(describing: response)) status code: \(response?.statusCode)")
                     if let response = response, response.statusCode == HTTPStatusCode.OK {
                         do {
                             print("facebook response ok: \(response.statusCode)")
                             var body = Data()
                             try response.readAllData(into: &body)
                             let decoder = JSONDecoder()
-                            // TODO: Remove JSONSerialization, only in for testing
-                            let userDictionary = try JSONSerialization.jsonObject(with: body, options: []) as? [String : Any]
-                            print("facebook response body: \(String(describing: userDictionary))")
                             if let selfInstance = try? decoder.decode(Self.self, from: body) {
                                 #if os(Linux)
                                 let key = NSString(string: token)
@@ -171,7 +167,14 @@ extension TypeSafeFacebookToken {
     // Defines the list of valid fields that can be requested from Facebook.
     // Source: https://developers.facebook.com/docs/facebook-login/permissions/v3.0#reference-extended-profile
     private static var validFieldNames: Set<String> {
-        return ["id", "first_name", "last_name", "middle_name", "name", "name_format", "picture", "short_name", "email"]
+        return [
+            // Default fields representing parts of a person's public profile. These can always be requested.
+            "id", "first_name", "last_name", "middle_name", "name", "name_format", "picture", "short_name", "email",
+            // The following permissions require approval prior to use in an app.
+            // If you request these without approval, Facebook will send 400 "Bad Request"
+            "groups_access_member_info", "user_age_range", "user_birthday", "user_events", "user_friends", "user_gender", "user_hometown", "user_likes", "user_link", "user_location", "user_photos", "user_posts", "user_tagged_places", "user_videos", "read_insights", "read_audience_network_insights"
+            //
+        ]
     }
     
     // Decodes the user's type using the TypeDecoder, in order to find the fields that we
@@ -191,5 +194,4 @@ extension TypeSafeFacebookToken {
         }
         return decodedString.filter(validFieldNames.contains).joined(separator: ",")
     }
-    
 }
