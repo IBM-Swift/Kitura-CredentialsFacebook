@@ -23,14 +23,12 @@ import Foundation
 import KituraContracts
 import TypeDecoder
 
-public protocol UserFacebookToken: TypeSafeCredentials, Codable {
+public protocol TypeSafeFacebookToken: TypeSafeCredentials {
     
     var id: String { get }
     
     var name: String { get }
     
-    static var usersCache: NSCache<NSString, FacebookCacheElement> { get }
-
 }
 
 // MARK FacebookCacheElement
@@ -38,25 +36,57 @@ public protocol UserFacebookToken: TypeSafeCredentials, Codable {
 /// The cache element for keeping facebook profile information.
 public class FacebookCacheElement {
     /// The user profile information stored as `UserFacebookToken`.
-    public var userProfile: UserFacebookToken
+    public var userProfile: TypeSafeFacebookToken
     
     /// Initialize a `FacebookCacheElement`.
     ///
     /// - Parameter profile: the `UserFacebookToken` to store.
-    public init (profile: UserFacebookToken) {
+    public init (profile: TypeSafeFacebookToken) {
         userProfile = profile
     }
 }
 
+// MARK FacebookPicture
+
+/// A structure representing the metadata provided by the Facebook API corresponding
+/// to a user's profile picture. This includes the URL of the image and its width and height.
+/// If you wish to retrieve this information, include `let picture: FacebookPicture` in your
+/// user profile.
 public struct FacebookPicture: Codable {
-    public struct facebookData: Codable {
+    public struct Properties: Codable {
         public var url: String
+        public var height: Int
+        public var width: Int
     }
-    public let data: facebookData
+    public let data: FacebookPicture.Properties
 }
 
-extension UserFacebookToken {
-    
+// An internal type to hold the mapping from a user's type to an appropriate token cache.
+//
+// It is a workaround for the inability to define stored properties in a protocol extension.
+//
+// We use the `debugDescription` of the user's type (via `String(reflecting:)`) as the
+// dictionary key.
+private struct TypeSafeFacebookTokenCache {
+    internal static var cacheForType: [String: NSCache<NSString, FacebookCacheElement>] = [:]
+}
+
+extension TypeSafeFacebookToken {
+
+    // Associates a token cache with the user's type. This relieves the user from having to
+    // declare a usersCache property on their conforming type.
+    private static var usersCache: NSCache<NSString, FacebookCacheElement> {
+        let key = String(reflecting: Self.self)
+        if let usersCache = TypeSafeFacebookTokenCache.cacheForType[key] {
+            return usersCache
+        } else {
+            let usersCache = NSCache<NSString, FacebookCacheElement>()
+            TypeSafeFacebookTokenCache.cacheForType[key] = usersCache
+            return usersCache
+        }
+    }
+
+    /// Provides a default provider name of `Facebook`.
     public var provider: String {
         return "Facebook"
     }
@@ -138,6 +168,18 @@ extension UserFacebookToken {
         }
     }
     
+    // Defines the list of valid fields that can be requested from Facebook.
+    // Source: https://developers.facebook.com/docs/facebook-login/permissions/v3.0#reference-extended-profile
+    private static var validFieldNames: Set<String> {
+        return ["id", "first_name", "last_name", "middle_name", "name", "name_format", "picture", "short_name", "email"]
+    }
+    
+    // Decodes the user's type using the TypeDecoder, in order to find the fields that we
+    // should request from Facebook on behalf of the user.
+    //
+    // After finding a shortlist of fields, we filter on the fields Facebook can provide,
+    // which is crucial because Facebook will return Bad Request if asked for anything
+    // other than the documented field names.
     private static func decodeFields() -> String {
         var decodedString = [String]()
         if let fieldsInfo = try? TypeDecoder.decode(Self.self) {
@@ -147,7 +189,7 @@ extension UserFacebookToken {
                 }
             }
         }
-        return decodedString.joined(separator: ",")
+        return decodedString.filter(validFieldNames.contains).joined(separator: ",")
     }
     
 }

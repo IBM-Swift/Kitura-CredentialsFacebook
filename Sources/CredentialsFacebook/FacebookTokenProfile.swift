@@ -17,8 +17,8 @@
 import Foundation
 
 
-// A pre-constructed UserFacebookToken which has all the default fields you can request from facebook.
-public struct DefaultTypeSafeFacebookToken: UserFacebookToken {
+// A pre-constructed TypeSafeFacebookToken which has all the default fields you can request from facebook.
+public struct FacebookTokenProfile: TypeSafeFacebookToken {
 
     public let id: String
     
@@ -34,6 +34,8 @@ public struct DefaultTypeSafeFacebookToken: UserFacebookToken {
     
     public let last_name: String?
     
-    public static var usersCache = NSCache<NSString, FacebookCacheElement>()
+    public let banana: String?
+    
+//    public static var usersCache = NSCache<NSString, FacebookCacheElement>()
     
 }
