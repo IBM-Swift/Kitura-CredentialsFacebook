@@ -177,13 +177,14 @@ extension TypeSafeFacebookToken {
                     Log.error("Failed to match Facebook recieved app ID to user defined app ID")
                     return callback(false)
             }
+            return callback(true)
         }
         fbAppReq.end()
     }
     
     private static func getTokenProfile(token: String, callback: @escaping (Self?) -> Void) {
         let fieldsInfo = decodeFields()
-        let fbreq = HTTP.request("https://graph.facebook.com/access_token=\(token)&fields=\(fieldsInfo)") { response in
+        let fbreq = HTTP.request("https://graph.facebook.com/me?access_token=\(token)&fields=\(fieldsInfo)") { response in
             // check you have recieved an ok response from facebook
             var body = Data()
             let decoder = JSONDecoder()
