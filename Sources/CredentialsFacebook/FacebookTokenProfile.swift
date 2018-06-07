@@ -17,11 +17,15 @@
 import Foundation
 
 
-// A pre-constructed TypeSafeFacebookToken which has all the default fields you can request from facebook.
+/// A pre-constructed TypeSafeFacebookToken which contains the default fields that can be
+/// requested from Facebook.
+/// See: https://developers.facebook.com/docs/facebook-login/permissions/v3.0#reference-default_fields
 public struct FacebookTokenProfile: TypeSafeFacebookToken {
     
     public static var appID: String = ""
 
+    /// The application-scoped ID field. Note that this field uniquely identifies a user
+    /// wihin the context of the application represented by the token.
     public let id: String
     
     public let name: String
@@ -30,10 +34,12 @@ public struct FacebookTokenProfile: TypeSafeFacebookToken {
     
     public let email: String?
 
-    public let first_name: String?
+    public let first_name: String
     
     public let middle_name: String?
     
-    public let last_name: String?
-        
+    public let last_name: String
+
+    public let name_format: String
+
 }
