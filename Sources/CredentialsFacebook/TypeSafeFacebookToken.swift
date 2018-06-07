@@ -20,7 +20,6 @@ import KituraNet
 import LoggerAPI
 import Credentials
 import Foundation
-import KituraContracts
 import TypeDecoder
 
 public protocol TypeSafeFacebookToken: TypeSafeCredentials {
@@ -174,7 +173,6 @@ extension TypeSafeFacebookToken {
                 let appDictionary = try? JSONSerialization.jsonObject(with: body, options: []) as? [String : Any],
                 Self.appID == appDictionary?["id"] as? String
                 else {
-                    Log.error("Failed to match Facebook recieved app ID to user defined app ID")
                     return callback(false)
             }
             return callback(true)
@@ -193,7 +191,6 @@ extension TypeSafeFacebookToken {
                 let _ = try? response.readAllData(into: &body),
                 let selfInstance = try? decoder.decode(Self.self, from: body)
                 else {
-                    Log.error("Failed to read Facebook response")
                     return callback(nil)
             }
             
