@@ -20,7 +20,7 @@ import Foundation
 // A pre-constructed TypeSafeFacebookToken which has all the default fields you can request from facebook.
 public struct FacebookTokenProfile: TypeSafeFacebookToken {
     
-    public static var appID: String?
+    public static var appID: String = ""
 
     public let id: String
     

@@ -25,7 +25,7 @@ import TypeDecoder
 
 public protocol TypeSafeFacebookToken: TypeSafeCredentials {
     
-    static var appID: String? { get }
+    static var appID: String { get }
     
     var id: String { get }
     
@@ -114,77 +114,23 @@ extension TypeSafeFacebookToken {
             return onFailure(nil, nil)
         }
         
-        // Look for the profile in the cache. If you have a profile stored return that.
-        #if os(Linux)
-        let key = NSString(string: token)
-        #else
-        let key = token as NSString
-        #endif
-        let cacheElement = Self.usersCache.object(forKey: key)
-        if let cacheProfile = cacheElement?.userProfile as? Self {
+        if let cacheProfile = getFromCache(token: token) {
             return onSuccess(cacheProfile)
         }
         
-        // Set up the request to Facebook for the app id for this token
-        var appRequestOptions: [ClientRequest.Options] = []
-        appRequestOptions.append(.schema("https://"))
-        appRequestOptions.append(.hostname("graph.facebook.com"))
-        appRequestOptions.append(.method("GET"))
-        appRequestOptions.append(.path("/app?access_token=\(token)"))
-        var appHeaders = [String:String]()
-        appHeaders["Accept"] = "application/json"
-        appRequestOptions.append(.headers(appHeaders))
-        
-        // Send the app id request to facebook
-        let fbAppReq = HTTP.request(appRequestOptions) { response in
-            // check you have recieved an app id from facebook which matches the app id you set
-            var body = Data()
-            guard let response = response,
-                  response.statusCode == HTTPStatusCode.OK,
-                  let _ = try? response.readAllData(into: &body),
-                  let appDictionary = try? JSONSerialization.jsonObject(with: body, options: []) as? [String : Any],
-                  Self.appID == appDictionary?["id"] as? String
-            else {
+        validateAppID(token: token) { (validID) in
+            guard validID else {
                 Log.error("Failed to match Facebook recieved app ID to user defined app ID")
                 return onFailure(nil, nil)
             }
+            getTokenProfile(token: token, callback: { (tokenProfile) in
+                guard let tokenProfile = tokenProfile else {
+                    Log.error("Failed to retrieve Facebook profile for token")
+                    return onFailure(nil, nil)
+                }
+                return onSuccess(tokenProfile)
+            })
         }
-        fbAppReq.end()
-        
-        // set up request to Facebook for user profile corresponding to the token
-        let fieldsInfo = decodeFields()
-        var requestOptions: [ClientRequest.Options] = []
-        requestOptions.append(.schema("https://"))
-        requestOptions.append(.hostname("graph.facebook.com"))
-        requestOptions.append(.method("GET"))
-        requestOptions.append(.path("/me?access_token=\(token)&fields=\(fieldsInfo)"))
-        var headers = [String:String]()
-        headers["Accept"] = "application/json"
-        requestOptions.append(.headers(headers))
-        
-        // Send the user profile request to facebook
-        let fbreq = HTTP.request(requestOptions) { response in
-            // check you have recieved an ok response from facebook
-            var body = Data()
-            let decoder = JSONDecoder()
-            guard let response = response,
-                  response.statusCode == HTTPStatusCode.OK,
-                  let _ = try? response.readAllData(into: &body),
-                  let selfInstance = try? decoder.decode(Self.self, from: body)
-            else {
-                Log.error("Failed to read Facebook response")
-                return onFailure(nil, nil)
-            }
-            
-            #if os(Linux)
-            let key = NSString(string: token)
-            #else
-            let key = token as NSString
-            #endif
-            Self.usersCache.setObject(FacebookCacheElement(profile: selfInstance), forKey: key)
-            return onSuccess(selfInstance)
-        }
-        fbreq.end()
     }
     
     // Defines the list of valid fields that can be requested from Facebook.
@@ -215,5 +161,59 @@ extension TypeSafeFacebookToken {
             }
         }
         return decodedString.filter(validFieldNames.contains).joined(separator: ",")
+    }
+    
+    private static func validateAppID(token: String, callback: @escaping (Bool) -> Void) {
+        // Send the app id request to facebook
+        let fbAppReq = HTTP.request("https://graph.facebook.com/app?access_token=\(token)") { response in
+            // check you have recieved an app id from facebook which matches the app id you set
+            var body = Data()
+            guard let response = response,
+                response.statusCode == HTTPStatusCode.OK,
+                let _ = try? response.readAllData(into: &body),
+                let appDictionary = try? JSONSerialization.jsonObject(with: body, options: []) as? [String : Any],
+                Self.appID == appDictionary?["id"] as? String
+                else {
+                    Log.error("Failed to match Facebook recieved app ID to user defined app ID")
+                    return callback(false)
+            }
+        }
+        fbAppReq.end()
+    }
+    
+    private static func getTokenProfile(token: String, callback: @escaping (Self?) -> Void) {
+        let fieldsInfo = decodeFields()
+        let fbreq = HTTP.request("https://graph.facebook.com/access_token=\(token)&fields=\(fieldsInfo)") { response in
+            // check you have recieved an ok response from facebook
+            var body = Data()
+            let decoder = JSONDecoder()
+            guard let response = response,
+                response.statusCode == HTTPStatusCode.OK,
+                let _ = try? response.readAllData(into: &body),
+                let selfInstance = try? decoder.decode(Self.self, from: body)
+                else {
+                    Log.error("Failed to read Facebook response")
+                    return callback(nil)
+            }
+            
+            #if os(Linux)
+            let key = NSString(string: token)
+            #else
+            let key = token as NSString
+            #endif
+            Self.usersCache.setObject(FacebookCacheElement(profile: selfInstance), forKey: key)
+            return callback(selfInstance)
+        }
+        fbreq.end()
+    }
+    
+    private static func getFromCache(token: String) -> Self? {
+        #if os(Linux)
+        let key = NSString(string: token)
+        #else
+        let key = token as NSString
+        #endif
+        let cacheElement = Self.usersCache.object(forKey: key)
+        return cacheElement?.userProfile as? Self
     }
 }
