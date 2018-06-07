@@ -25,6 +25,8 @@ import TypeDecoder
 
 public protocol TypeSafeFacebookToken: TypeSafeCredentials {
     
+    static var appID: String? { get }
+    
     var id: String { get }
     
     var name: String { get }
@@ -100,68 +102,89 @@ extension TypeSafeFacebookToken {
     /// - Parameter options: The dictionary of plugin specific options.
     /// - Parameter onSuccess: The closure to invoke in the case of successful authentication.
     /// - Parameter onFailure: The closure to invoke in the case of an authentication failure.
-    /// - Parameter onPass: The closure to invoke when the plugin doesn't recognize
+    /// - Parameter onSkip: The closure to invoke when the plugin doesn't recognize
     ///                     the authentication token in the request.
-    /// - Parameter inProgress: The closure to invoke to cause a redirect to the login page in the
-    ///                     case of redirecting authentication.
     public static func authenticate(request: RouterRequest, response: RouterResponse, onSuccess: @escaping (Self) -> Void, onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void, onSkip: @escaping (HTTPStatusCode?, [String : String]?) -> Void) {
-        if let type = request.headers["X-token-type"], type == "FacebookToken" {
-            if let token = request.headers["access_token"] {
-                print("using facebook token authentication")
-                #if os(Linux)
-                let key = NSString(string: token)
-                #else
-                let key = token as NSString
-                #endif
-                let cacheElement = Self.usersCache.object(forKey: key)
-                if let cacheProfile = cacheElement?.userProfile as? Self {
-                    print("using cache: \(cacheProfile)")
-                    onSuccess(cacheProfile)
-                    return
-                }
-                let fieldsInfo = decodeFields()
-                print("fieldsInfo: \(fieldsInfo)")
-                var requestOptions: [ClientRequest.Options] = []
-                requestOptions.append(.schema("https://"))
-                requestOptions.append(.hostname("graph.facebook.com"))
-                requestOptions.append(.method("GET"))
-                requestOptions.append(.path("/me?access_token=\(token)&fields=\(fieldsInfo)"))
-                var headers = [String:String]()
-                headers["Accept"] = "application/json"
-                requestOptions.append(.headers(headers))
-                
-                let fbreq = HTTP.request(requestOptions) { response in
-                    if let response = response, response.statusCode == HTTPStatusCode.OK {
-                        do {
-                            print("facebook response ok: \(response.statusCode)")
-                            var body = Data()
-                            try response.readAllData(into: &body)
-                            let decoder = JSONDecoder()
-                            if let selfInstance = try? decoder.decode(Self.self, from: body) {
-                                #if os(Linux)
-                                let key = NSString(string: token)
-                                #else
-                                let key = token as NSString
-                                #endif
-                                Self.usersCache.setObject(FacebookCacheElement(profile: selfInstance), forKey: key)
-                                onSuccess(selfInstance)
-                                return
-                            }
-                        } catch {
-                            Log.error("Failed to read Facebook response")
-                        }
-                    }
-                    onFailure(nil, nil)
-                }
-                fbreq.end()
-            }
+        
+        guard let type = request.headers["X-token-type"], type == "FacebookToken" else {
+            return onSkip(nil, nil)
+        }
+        
+        guard let token = request.headers["access_token"] else {
+            return onFailure(nil, nil)
+        }
+        
+        // Look for the profile in the cache. If you have a profile stored return that.
+        #if os(Linux)
+        let key = NSString(string: token)
+        #else
+        let key = token as NSString
+        #endif
+        let cacheElement = Self.usersCache.object(forKey: key)
+        if let cacheProfile = cacheElement?.userProfile as? Self {
+            return onSuccess(cacheProfile)
+        }
+        
+        // Set up the request to Facebook for the app id for this token
+        var appRequestOptions: [ClientRequest.Options] = []
+        appRequestOptions.append(.schema("https://"))
+        appRequestOptions.append(.hostname("graph.facebook.com"))
+        appRequestOptions.append(.method("GET"))
+        appRequestOptions.append(.path("/app?access_token=\(token)"))
+        var appHeaders = [String:String]()
+        appHeaders["Accept"] = "application/json"
+        appRequestOptions.append(.headers(appHeaders))
+        
+        // Send the app id request to facebook
+        let fbAppReq = HTTP.request(appRequestOptions) { response in
+            // check you have recieved an app id from facebook which matches the app id you set
+            var body = Data()
+            guard let response = response,
+                  response.statusCode == HTTPStatusCode.OK,
+                  let _ = try? response.readAllData(into: &body),
+                  let appDictionary = try? JSONSerialization.jsonObject(with: body, options: []) as? [String : Any],
+                  Self.appID == appDictionary?["id"] as? String
             else {
-                onFailure(nil, nil)
+                Log.error("Failed to match Facebook recieved app ID to user defined app ID")
+                return onFailure(nil, nil)
             }
         }
-        else {
-            onSkip(nil, nil)
+        fbAppReq.end()
+        
+        // set up request to Facebook for user profile corresponding to the token
+        let fieldsInfo = decodeFields()
+        var requestOptions: [ClientRequest.Options] = []
+        requestOptions.append(.schema("https://"))
+        requestOptions.append(.hostname("graph.facebook.com"))
+        requestOptions.append(.method("GET"))
+        requestOptions.append(.path("/me?access_token=\(token)&fields=\(fieldsInfo)"))
+        var headers = [String:String]()
+        headers["Accept"] = "application/json"
+        requestOptions.append(.headers(headers))
+        
+        // Send the user profile request to facebook
+        let fbreq = HTTP.request(requestOptions) { response in
+            // check you have recieved an ok response from facebook
+            var body = Data()
+            let decoder = JSONDecoder()
+            guard let response = response,
+                  response.statusCode == HTTPStatusCode.OK,
+                  let _ = try? response.readAllData(into: &body),
+                  let selfInstance = try? decoder.decode(Self.self, from: body)
+            else {
+                Log.error("Failed to read Facebook response")
+                return onFailure(nil, nil)
+            }
+            
+            #if os(Linux)
+            let key = NSString(string: token)
+            #else
+            let key = token as NSString
+            #endif
+            Self.usersCache.setObject(FacebookCacheElement(profile: selfInstance), forKey: key)
+            return onSuccess(selfInstance)
         }
+        fbreq.end()
     }
     
     // Defines the list of valid fields that can be requested from Facebook.
@@ -170,10 +193,9 @@ extension TypeSafeFacebookToken {
         return [
             // Default fields representing parts of a person's public profile. These can always be requested.
             "id", "first_name", "last_name", "middle_name", "name", "name_format", "picture", "short_name", "email",
-            // The following permissions require approval prior to use in an app.
+            // The following permissions require a facebook app review prior to use.
             // If you request these without approval, Facebook will send 400 "Bad Request"
             "groups_access_member_info", "user_age_range", "user_birthday", "user_events", "user_friends", "user_gender", "user_hometown", "user_likes", "user_link", "user_location", "user_photos", "user_posts", "user_tagged_places", "user_videos", "read_insights", "read_audience_network_insights"
-            //
         ]
     }
     
