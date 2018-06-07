@@ -32,34 +32,17 @@ public protocol TypeSafeFacebookToken: TypeSafeCredentials {
         
 }
 
-// MARK FacebookCacheElement
-
 /// The cache element for keeping facebook profile information.
-public class FacebookCacheElement {
-    /// The user profile information stored as `UserFacebookToken`.
-    public var userProfile: TypeSafeFacebookToken
+private class FacebookCacheElement {
+    /// The user profile information stored as `TypeSafeFacebookToken`.
+    internal var userProfile: TypeSafeFacebookToken
     
     /// Initialize a `FacebookCacheElement`.
     ///
-    /// - Parameter profile: the `UserFacebookToken` to store.
-    public init (profile: TypeSafeFacebookToken) {
+    /// - Parameter profile: the `TypeSafeFacebookToken` to store.
+    internal init (profile: TypeSafeFacebookToken) {
         userProfile = profile
     }
-}
-
-// MARK FacebookPicture
-
-/// A structure representing the metadata provided by the Facebook API corresponding
-/// to a user's profile picture. This includes the URL of the image and its width and height.
-/// If you wish to retrieve this information, include `let picture: FacebookPicture` in your
-/// user profile.
-public struct FacebookPicture: Codable {
-    public struct Properties: Codable {
-        public var url: String
-        public var height: Int
-        public var width: Int
-    }
-    public let data: FacebookPicture.Properties
 }
 
 // An internal type to hold the mapping from a user's type to an appropriate token cache.
@@ -103,25 +86,35 @@ extension TypeSafeFacebookToken {
     /// - Parameter onFailure: The closure to invoke in the case of an authentication failure.
     /// - Parameter onSkip: The closure to invoke when the plugin doesn't recognize
     ///                     the authentication token in the request.
-    public static func authenticate(request: RouterRequest, response: RouterResponse, onSuccess: @escaping (Self) -> Void, onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void, onSkip: @escaping (HTTPStatusCode?, [String : String]?) -> Void) {
-        
+    public static func authenticate(request: RouterRequest, response: RouterResponse,
+                                    onSuccess: @escaping (Self) -> Void,
+                                    onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void,
+                                    onSkip: @escaping (HTTPStatusCode?, [String : String]?) -> Void) {
+        // Check whether this request declares that a Facebook token is being supplied
         guard let type = request.headers["X-token-type"], type == "FacebookToken" else {
             return onSkip(nil, nil)
         }
-        
+        // Check whether a token has been supplied
         guard let token = request.headers["access_token"] else {
             return onFailure(nil, nil)
         }
-        
+        // Return a cached profile from the cache associated with our type, if one is found
+        // (ie. if we have successfully authenticated this token before)
         if let cacheProfile = getFromCache(token: token) {
             return onSuccess(cacheProfile)
         }
-        
+        // Attempt to validate the supplied token. First check that the token was issued by
+        // the expected OAuth application: this is necessary because the ID returned by
+        // facebook is application-scoped, and so in theory, a user could supply a token
+        // issued by a different OAuth application that contains an ID that collides with
+        // an existing ID issued in the scope of our application.
         validateAppID(token: token) { (validID) in
             guard validID else {
+                // Reject any tokens that have not been issued by our OAuth application id (appID).
                 Log.error("Failed to match Facebook recieved app ID to user defined app ID")
                 return onFailure(nil, nil)
             }
+            // Attempt to retrieve the subject's profile from Facebook.
             getTokenProfile(token: token, callback: { (tokenProfile) in
                 guard let tokenProfile = tokenProfile else {
                     Log.error("Failed to retrieve Facebook profile for token")
@@ -140,7 +133,7 @@ extension TypeSafeFacebookToken {
             "id", "first_name", "last_name", "middle_name", "name", "name_format", "picture", "short_name", "email",
             // The following permissions require a facebook app review prior to use.
             // If you request these without approval, Facebook will send 400 "Bad Request"
-            "groups_access_member_info", "user_age_range", "user_birthday", "user_events", "user_friends", "user_gender", "user_hometown", "user_likes", "user_link", "user_location", "user_photos", "user_posts", "user_tagged_places", "user_videos", "read_insights", "read_audience_network_insights"
+            "age_range", "birthday", "events", "friends", "gender", "hometown", "likes", "link", "location", "photos", "posts", "tagged_places", "videos"
         ]
     }
     
@@ -183,24 +176,35 @@ extension TypeSafeFacebookToken {
     private static func getTokenProfile(token: String, callback: @escaping (Self?) -> Void) {
         let fieldsInfo = decodeFields()
         let fbreq = HTTP.request("https://graph.facebook.com/me?access_token=\(token)&fields=\(fieldsInfo)") { response in
-            // check you have recieved an ok response from facebook
+            // Check we have recieved an OK response from Facebook
             var body = Data()
             let decoder = JSONDecoder()
-            guard let response = response,
-                response.statusCode == HTTPStatusCode.OK,
-                let _ = try? response.readAllData(into: &body),
-                let selfInstance = try? decoder.decode(Self.self, from: body)
-                else {
-                    return callback(nil)
+            guard let response = response else {
+                Log.error("Request to facebook failed: response was nil")
+                return callback(nil)
             }
-            
-            #if os(Linux)
-            let key = NSString(string: token)
-            #else
-            let key = token as NSString
-            #endif
-            Self.usersCache.setObject(FacebookCacheElement(profile: selfInstance), forKey: key)
-            return callback(selfInstance)
+            guard response.statusCode == HTTPStatusCode.OK,
+                let _ = try? response.readAllData(into: &body)
+            else {
+                Log.error("Facebook request failed: statusCode=\(response.statusCode), body=\(String(data: body, encoding: .utf8) ?? "")")
+                return callback(nil)
+            }
+print("FB response = \(String(data: body, encoding: .utf8) ?? "")")
+            // Attempt to construct the user's type by decoding the Facebook response. This could
+            // fail if the user has defined any additional, non-optional fields on their type.
+            do {
+                let selfInstance = try decoder.decode(Self.self, from: body)
+                #if os(Linux)
+                    let key = NSString(string: token)
+                #else
+                    let key = token as NSString
+                #endif
+                Self.usersCache.setObject(FacebookCacheElement(profile: selfInstance), forKey: key)
+                return callback(selfInstance)
+            } catch {
+                Log.error("Failed to decode \(Self.self) from Facebook response, error=\(error)")
+                return callback(nil)
+            }
         }
         fbreq.end()
     }
