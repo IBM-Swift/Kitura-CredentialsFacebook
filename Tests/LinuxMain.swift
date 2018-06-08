@@ -20,5 +20,5 @@ import XCTest
 
 
 XCTMain([
-            testCase(TestToken.allTests)
+            testCase(TestTypeSafeToken.allTests)
 ])
