@@ -27,6 +27,10 @@ class TestTypeSafeToken : XCTestCase {
     static var allTests : [(String, (TestTypeSafeToken) -> () throws -> Void)] {
         return [
             ("testCache", testCache),
+            ("testTwoInCache", testTwoInCache),
+            ("testCachedToken", testCachedToken),
+            ("testMissingTokenType", testMissingTokenType),
+            ("testMissingAccessToken", testMissingAccessToken),
         ]
     }
 
@@ -109,6 +113,17 @@ class TestTypeSafeToken : XCTestCase {
             self.performRequest(method: "get", path:"multiTypeSafeToken", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
+                do {
+                    guard let body = try response?.readString(), let userData = body.data(using: .utf8) else {
+                        XCTFail("No response body")
+                        return
+                    }
+                    let decoder = JSONDecoder()
+                    let profile = try decoder.decode(User.self, from: userData)
+                    XCTAssertEqual(profile.id, "123", "Body \(profile.id) is not equal to 123")
+                } catch {
+                    XCTFail("No response body")
+                }
                 expectation.fulfill()
             }, headers: ["access_token" : self.token])
         }
@@ -141,13 +156,11 @@ class TestTypeSafeToken : XCTestCase {
         let router = Router()
         
         router.get("/typeSafeToken") { (profile: TestFacebookToken, respondWith: (TestFacebookToken?, RequestError?) -> Void) in
-            print("get on typeSafeToken")
             respondWith(profile, nil)
         }
         
-        router.get("/multiTypeSafeToken") { (profile: TestFacebookToken, respondWith: (User?, RequestError?) -> Void) in
-            print("get on typeSafeToken")
-            respondWith(User(id: "123"), nil)
+        router.get("/multiTypeSafeToken") { (profile: TestFacebookToken, respondWith: (TestFacebookToken?, RequestError?) -> Void) in
+            respondWith(profile, nil)
         }
         router.get("/multiTypeSafeToken") { (respondWith: (User?, RequestError?) -> Void) in
             respondWith(User(id: "123"), nil)
