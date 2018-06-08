@@ -22,14 +22,30 @@ import Credentials
 import Foundation
 import TypeDecoder
 
+/// A protocol that a user's type can conform to representing a user authenticated using a
+/// Facebook OAuth token.
 public protocol TypeSafeFacebookToken: TypeSafeCredentials {
+
+    // MARK: Instance fields
     
-    static var appID: String { get }
-    
+    /// The application-scoped ID field. Note that this field uniquely identifies a user
+    /// wihin the context of the application represented by the token.
     var id: String { get }
     
+    /// The subject's display name.
     var name: String { get }
-        
+    
+    // MARK: Static configuration for the type
+    
+    /// The OAuth client id ('AppID') that tokens should correspond to. This value must be
+    /// set to match the Facebook OAuth app that was used to issue the token. Tokens that
+    /// are received but that do not match this value will be rejected.
+    static var appID: String { get }
+    
+    /// A set of valid field names that can be requested from Facebook. A default set is
+    /// implemented for you, however this property can be overridden if needed to customize
+    /// or extend the set.
+    static var validFieldNames: Set<String> { get }
 }
 
 /// The cache element for keeping facebook profile information.
@@ -125,15 +141,20 @@ extension TypeSafeFacebookToken {
         }
     }
     
-    // Defines the list of valid fields that can be requested from Facebook.
-    // Source: https://developers.facebook.com/docs/facebook-login/permissions/v3.0#reference-extended-profile
-    private static var validFieldNames: Set<String> {
+    /// Defines the list of valid fields that can be requested from Facebook.
+    /// Source: https://developers.facebook.com/docs/facebook-login/permissions/v3.0#reference-extended-profile
+    ///
+    /// Note that this is for convenience and not an exhaustive list.
+    public static var validFieldNames: Set<String> {
         return [
-            // Default fields representing parts of a person's public profile. These can always be requested.
-            "id", "first_name", "last_name", "middle_name", "name", "name_format", "picture", "short_name", "email",
-            // The following permissions require a facebook app review prior to use.
-            // If you request these without approval, Facebook will send 400 "Bad Request"
-            "age_range", "birthday", "events", "friends", "gender", "hometown", "likes", "link", "location", "photos", "posts", "tagged_places", "videos"
+            // Default fields representing parts of a person's public profile. These can always be requested:
+            "id", "first_name", "last_name", "name", "name_format", "picture", "short_name",
+            // Optional fields that the user may not have provided within their profile:
+            "middle_name", 
+            // Optional fields that not need app review, but the user may decline to share the information:
+            "email",
+            // All other permissions require a facebook app review prior to use:
+            "age_range", "birthday", "friends", "gender", "hometown", "likes", "link", "location", "photos", "posts", "tagged_places"
         ]
     }
     
@@ -189,7 +210,6 @@ extension TypeSafeFacebookToken {
                 Log.error("Facebook request failed: statusCode=\(response.statusCode), body=\(String(data: body, encoding: .utf8) ?? "")")
                 return callback(nil)
             }
-print("FB response = \(String(data: body, encoding: .utf8) ?? "")")
             // Attempt to construct the user's type by decoding the Facebook response. This could
             // fail if the user has defined any additional, non-optional fields on their type.
             do {
@@ -203,6 +223,7 @@ print("FB response = \(String(data: body, encoding: .utf8) ?? "")")
                 return callback(selfInstance)
             } catch {
                 Log.error("Failed to decode \(Self.self) from Facebook response, error=\(error)")
+                Log.debug("Facebook response data: statusCode=\(response.statusCode), body=\(String(data: body, encoding: .utf8) ?? "")")
                 return callback(nil)
             }
         }

@@ -1,7 +1,5 @@
-// MARK FacebookPicture
-
 /// A structure representing the metadata provided by the Facebook API corresponding
-/// to a user's profile picture. This includes the URL of the image and its width and height.
+/// to a subject's profile picture. This includes the URL of the image and its width and height.
 /// If you wish to retrieve this information, include `let picture: FacebookPicture` in your
 /// user profile.
 public struct FacebookPicture: Codable {
@@ -13,11 +11,14 @@ public struct FacebookPicture: Codable {
     public let data: FacebookPicture.Properties
 }
 
+/// The subject's age range.
 public struct FacebookAgeRange: Codable {
     let min: Int?
     let max: Int?
 }
 
+/// Information on the subject's friends. Note that only friends of this user that
+/// have also granted this permission to the same OAuth application will be detailed.
 public struct FacebookFriends: Codable {
     struct FriendSummary: Codable {
         let total_count: Int
@@ -26,16 +27,19 @@ public struct FacebookFriends: Codable {
     let summary: FacebookFriends.FriendSummary
 }
 
+/// Information about the subject's home town.
 public struct FacebookHometown: Codable {
     let id: String
     let name: String
 }
 
+/// The subject's location (current city) as specified on their profile.
 public struct FacebookLocation: Codable {
     let id: String
     let name: String
 }
 
+/// Information about items the subject has 'liked'.
 public struct FacebookLikes: Codable {
     struct FacebookLike: Codable {
         let name: String
@@ -46,6 +50,8 @@ public struct FacebookLikes: Codable {
     let paging: FacebookPaging?
 }
 
+/// Metadata about the subject's photos, which can be used to access the photos via the User API:
+/// https://developers.facebook.com/docs/graph-api/reference/user/photos
 public struct FacebookPhotos: Codable {
     struct FacebookPhoto: Codable {
         let created_time: String
@@ -56,6 +62,7 @@ public struct FacebookPhotos: Codable {
     let paging: FacebookPaging?
 }
 
+/// Data from the subject's timeline, including posts they have created and been tagged in.
 public struct FacebookPosts: Codable {
     struct FacebookPost: Codable {
         let message: String?
@@ -66,6 +73,7 @@ public struct FacebookPosts: Codable {
     let paging: FacebookPostsPaging?
 }
 
+/// A list of places that the subject has been tagged at.
 public struct FacebookTaggedPlaces: Codable {
     struct FacebookLocation: Codable {
         let city: String?
@@ -90,6 +98,7 @@ public struct FacebookTaggedPlaces: Codable {
     let paging: FacebookPaging
 }
 
+/// Data allowing further retreival of paginated data.
 public struct FacebookPaging: Codable {
     struct Cursors: Codable {
         let before: String
@@ -99,6 +108,7 @@ public struct FacebookPaging: Codable {
     let next: String
 }
 
+/// Data allowing further retreival of paginated timeline data.
 public struct FacebookPostsPaging: Codable {
     let previous: String?
     let next: String?
