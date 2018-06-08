@@ -38,6 +38,10 @@ let package = Package(
         .target(
             name: "CredentialsFacebook",
             dependencies: ["Credentials", "TypeDecoder"]
+        ),
+        .testTarget(
+            name: "CredentialsFacebookTests",
+            dependencies: ["CredentialsFacebook"]
         )
     ]
 )

@@ -24,6 +24,13 @@ import Foundation
 /// Note that the Optional fields will only be initialized if the user's OAuth token grants
 /// access to the data, and many extended permissions require a Facebook app review prior
 /// to that app being allowed to request them.
+/**
+ ### Usage Example: ###
+ FacebookTokenProfile.appID = "yourAppID"
+ router.get("/facebookProfile") { (user: FacebookTokenProfile, respondWith: (FacebookTokenProfile?, RequestError?) -> Void) in
+    respondWith(user, nil)
+ }
+ */
 public struct FacebookTokenProfile: TypeSafeFacebookToken {
     
     /// The OAuth client id ('AppID') that tokens should correspond to. This value must be
