@@ -19,6 +19,7 @@ import XCTest
 
 import Kitura
 import KituraNet
+import LoggerAPI
 
 @testable import CredentialsFacebook
 
@@ -89,7 +90,7 @@ class TestTypeSafeToken : XCTestCase {
         }
         TestFacebookToken.saveInCache(profile: profileInstance, token: token)
         performServerTest(router: router) { expectation in
-            self.performRequest(method: "get", path:"typeSafeToken", callback: {response in
+            self.performRequest(method: "get", path: "/singleHandler", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -101,7 +102,7 @@ class TestTypeSafeToken : XCTestCase {
                     let profile = try decoder.decode(TestFacebookToken.self, from: tokenData)
                     XCTAssertEqual(profile, profileInstance, "Body \(profile) is not equal to \(profileInstance)")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("No response body: \(error)")
                 }
                 expectation.fulfill()
             }, headers: ["X-token-type" : "FacebookToken", "access_token" : self.token])
@@ -110,7 +111,7 @@ class TestTypeSafeToken : XCTestCase {
     
     func testMissingTokenType() {
         performServerTest(router: router) { expectation in
-            self.performRequest(method: "get", path:"multiTypeSafeToken", callback: {response in
+            self.performRequest(method: "get", path: "/multipleHandlers", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
@@ -131,7 +132,7 @@ class TestTypeSafeToken : XCTestCase {
     
     func testMissingAccessToken() {
         performServerTest(router: router) { expectation in
-            self.performRequest(method: "get", path:"multiTypeSafeToken", callback: {response in
+            self.performRequest(method: "get", path: "/multipleHandlers", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.unauthorized, "HTTP Status code was \(String(describing: response?.statusCode))")
                 expectation.fulfill()
@@ -154,15 +155,16 @@ class TestTypeSafeToken : XCTestCase {
    
     static func setupCodableRouter() -> Router {
         let router = Router()
+        PrintLogger.use(colored: true)
         
-        router.get("/typeSafeToken") { (profile: TestFacebookToken, respondWith: (TestFacebookToken?, RequestError?) -> Void) in
+        router.get("/singleHandler") { (profile: TestFacebookToken, respondWith: (TestFacebookToken?, RequestError?) -> Void) in
             respondWith(profile, nil)
         }
         
-        router.get("/multiTypeSafeToken") { (profile: TestFacebookToken, respondWith: (TestFacebookToken?, RequestError?) -> Void) in
+        router.get("/multipleHandlers") { (profile: TestFacebookToken, respondWith: (TestFacebookToken?, RequestError?) -> Void) in
             respondWith(profile, nil)
         }
-        router.get("/multiTypeSafeToken") { (respondWith: (User?, RequestError?) -> Void) in
+        router.get("/multipleHandlers") { (respondWith: (User?, RequestError?) -> Void) in
             respondWith(User(id: "123"), nil)
         }
         
