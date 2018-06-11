@@ -179,7 +179,7 @@ extension TypeSafeFacebookToken {
     // After finding a shortlist of fields, we filter on the fields Facebook can provide,
     // which is crucial because Facebook will return Bad Request if asked for anything
     // other than the documented field names.
-    private static func decodeFields() -> String {
+    static func decodeValidFields() -> String {
         var decodedString = [String]()
         if let fieldsInfo = try? TypeDecoder.decode(Self.self) {
             if case .keyed(_, let dict) = fieldsInfo {
@@ -210,7 +210,7 @@ extension TypeSafeFacebookToken {
     }
 
     static func getTokenProfile(token: String, callback: @escaping (Self?) -> Void) {
-        let fieldsInfo = decodeFields()
+        let fieldsInfo = decodeValidFields()
         let fbreq = HTTP.request("https://graph.facebook.com/me?access_token=\(token)&fields=\(fieldsInfo)") { response in
             // Check we have recieved an OK response from Facebook
             guard let response = response else {
