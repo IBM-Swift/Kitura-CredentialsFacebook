@@ -29,6 +29,8 @@ class TestTypeSafeToken : XCTestCase {
         return [
             ("testDefaultTokenProfile", testDefaultTokenProfile),
             ("testMinimalTokenProfile", testMinimalTokenProfile),
+            ("testFieldNameFilter", testFieldNameFilter),
+            ("testOverrideFieldNameFilter", testOverrideFieldNameFilter),
             ("testCache", testCache),
             ("testTwoInCache", testTwoInCache),
             ("testCachedProfile", testCachedProfile),
@@ -46,18 +48,51 @@ class TestTypeSafeToken : XCTestCase {
         // Fields that should be retrieved from Facebook
         var id: String
         var name: String
-
+        var email: String?
+        
         // Fields that should be ignored (not part of the Facebook API)
-        var banana: String?
-        var randomNumber: Double?
-
+        var favouriteArtist: String?
+        var favouriteNumber: Int?
+        
         // Static configuration for this type
         static var appID: String = "123"
 
         // Testing requirement: Equatable
-        // Only fields that are part of the Facebook API are compared.
         static func == (lhs: TestFacebookToken, rhs: TestFacebookToken) -> Bool {
-            return lhs.id == rhs.id && lhs.name == rhs.name && lhs.provider == rhs.provider
+            return lhs.id == rhs.id
+                && lhs.name == rhs.name
+                && lhs.provider == rhs.provider
+                && lhs.email == rhs.email
+                && lhs.favouriteArtist == rhs.favouriteArtist
+                && lhs.favouriteNumber == rhs.favouriteNumber
+        }
+    }
+    
+    struct TestFacebookTokenCustomFilter: TypeSafeFacebookToken, Equatable {
+        // Fields that should be retrieved from Facebook
+        var id: String
+        var name: String
+        var email: String?
+        
+        // Fields that should be ignored (not part of the Facebook API)
+        var favouriteArtist: String?
+        var favouriteNumber: Int?
+
+        // Static configuration for this type
+        static var appID: String = "123"
+        
+        // Override the field names for the Facebook response, specifically, omitting the
+        // 'email' field that would be included by the default filter.
+        static var validFieldNames: Set<String> = ["id", "name"]
+        
+        // Testing requirement: Equatable
+        static func == (lhs: TestFacebookTokenCustomFilter, rhs: TestFacebookTokenCustomFilter) -> Bool {
+            return lhs.id == rhs.id
+                && lhs.name == rhs.name
+                && lhs.provider == rhs.provider
+                && lhs.email == rhs.email
+                && lhs.favouriteArtist == rhs.favouriteArtist
+                && lhs.favouriteNumber == rhs.favouriteNumber
         }
     }
 
@@ -94,12 +129,26 @@ class TestTypeSafeToken : XCTestCase {
         guard let profileInstance = TestFacebookToken.decodeFacebookResponse(data: testFacebookResponse) else {
             return XCTFail("Facebook JSON response cannot be decoded to FacebookTokenProfile")
         }
-        XCTAssertEqual(profileInstance.banana, nil)
-        XCTAssertEqual(profileInstance.randomNumber, nil)
-        let expectedProfile = TestFacebookToken(id: "12345678901234567", name: "John Doe", banana: "Banana", randomNumber: 123.456)
+        let expectedProfile = TestFacebookToken(id: "12345678901234567", name: "John Doe", email: "john_doe@invalid.com", favouriteArtist: nil, favouriteNumber: nil)
         XCTAssertEqual(profileInstance, expectedProfile, "The reference TestFacebookToken instance did not match the instance decoded from the Facebook JSON response")
     }
+    
+    // Tests that we are able to filter out unwanted fields from our Facebook query. In this example
+    // we are filtering out the 'favouriteArtist' and 'favouriteNumber' fields.
+    func testFieldNameFilter() {
+        let validFields = TestFacebookToken.decodeValidFields()
+        // Note: Field names appear in declaration order
+        XCTAssertEqual(validFields, "id,name,email")
+    }
 
+    // Tests that we can override the filter of field names that will be requested from Facebook.
+    // In this example, we exclude the 'email' field that would otherwise be included by the default
+    // filter.
+    func testOverrideFieldNameFilter() {
+        let validFields = TestFacebookTokenCustomFilter.decodeValidFields()
+        XCTAssertEqual(validFields, "id,name")
+    }
+    
     // Tests that a profile can be saved and retreived from the cache
     func testCache() {
         guard let profileInstance = TestFacebookToken.decodeFacebookResponse(data: testFacebookResponse) else {
@@ -178,7 +227,7 @@ class TestTypeSafeToken : XCTestCase {
                     }
                     let decoder = JSONDecoder()
                     let testResponse = try decoder.decode(TestFacebookToken.self, from: responseData)
-                    let expectedResponse = TestFacebookToken(id: "123", name: "abc", banana: nil, randomNumber: nil)
+                    let expectedResponse = TestFacebookToken(id: "123", name: "abc", email: "def", favouriteArtist: "ghi", favouriteNumber: 123)
                     XCTAssertEqual(testResponse, expectedResponse, "Response from second handler did not contain expected data")
                 } catch {
                     XCTFail("Could not decode response: \(error)")
@@ -214,7 +263,7 @@ class TestTypeSafeToken : XCTestCase {
         }
 
         router.get("/multipleHandlers") { (respondWith: (TestFacebookToken?, RequestError?) -> Void) in
-            respondWith(TestFacebookToken(id: "123", name: "abc", banana: nil, randomNumber: nil), nil)
+            respondWith(TestFacebookToken(id: "123", name: "abc", email: "def", favouriteArtist: "ghi", favouriteNumber: 123), nil)
         }
 
         return router
