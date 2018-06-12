@@ -20,8 +20,7 @@ import Credentials
 import LoggerAPI
 import TypeDecoder
 
-/// A protocol that defines common attributes of Facebook authentication methods (token
-/// and redirecting authentication).
+/// A protocol that defines common attributes of Facebook authentication methods.
 ///
 /// It is not intended for a user's type to conform to this protocol directly. Instead,
 /// your type should conform to a specific authentication type, such as
@@ -29,14 +28,13 @@ import TypeDecoder
 public protocol TypeSafeFacebook: TypeSafeCredentials {
     /// The OAuth client id ('AppID') that tokens should correspond to. This value must be
     /// set to match the Facebook OAuth app that was used to issue the token. Tokens that
-    /// are received but that do not match this value will be rejected.
+    /// do not match this value will be rejected.
     static var appID: String { get }
 
     /// A set of valid field names that can be requested from Facebook. A default set is
-    /// implemented for you, however this property can be overridden if needed to customize
-    /// or extend the set.
+    /// implemented for you, however this property can be overridden to customize or
+    /// extend the set.
     static var validFieldNames: Set<String> { get }
-
 }
 
 extension TypeSafeFacebook {
@@ -46,7 +44,7 @@ extension TypeSafeFacebook {
     }
 
     /// Defines the list of valid fields that can be requested from Facebook.
-    /// Source: https://developers.facebook.com/docs/facebook-login/permissions/v3.0#reference-extended-profile
+    /// Source: https://developers.facebook.com/docs/facebook-login/permissions/v3.0#reference-default_fields
     ///
     /// Note that this is for convenience and not an exhaustive list.
     public static var validFieldNames: Set<String> {

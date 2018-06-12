@@ -17,19 +17,22 @@
 import Foundation
 
 
-/// A pre-constructed TypeSafeFacebookToken which contains the default fields plus examples
-/// of optional fields that can be requested from Facebook.
-/// See: https://developers.facebook.com/docs/facebook-login/permissions/v3.0#reference-default_fields
-///
-/// Note that the Optional fields will only be initialized if the user's OAuth token grants
-/// access to the data, and many extended permissions require a Facebook app review prior
-/// to that app being allowed to request them.
 /**
+ A pre-constructed TypeSafeFacebookToken which contains the default fields plus examples
+ of optional fields that can be requested from Facebook.
+ See: https://developers.facebook.com/docs/facebook-login/permissions/v3.0#reference-default_fields
+
+ Note that the Optional fields will only be initialized if the user's OAuth token grants
+ access to the data, and many extended permissions require a Facebook app review prior
+ to that app being allowed to request them.
+
  ### Usage Example: ###
+ ```swift
  FacebookTokenProfile.appID = "yourAppID"
  router.get("/facebookProfile") { (user: FacebookTokenProfile, respondWith: (FacebookTokenProfile?, RequestError?) -> Void) in
     respondWith(user, nil)
  }
+ ```
  */
 public struct FacebookTokenProfile: TypeSafeFacebookToken {
     
@@ -60,10 +63,10 @@ public struct FacebookTokenProfile: TypeSafeFacebookToken {
     /// The subject's last name.
     public let last_name: String
 
-    /// The subject's chosen name format, eg: `"{first} {last}"`
+    /// The subject's chosen name format, e.g.: `"{first} {last}"`.
     public let name_format: String
     
-    /// The subject's chosen short name
+    /// The subject's chosen short name.
     public let short_name: String
     
     // MARK: Optional fields

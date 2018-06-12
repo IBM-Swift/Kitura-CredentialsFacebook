@@ -3,11 +3,16 @@
 /// If you wish to retrieve this information, include `let picture: FacebookPicture` in your
 /// user profile.
 public struct FacebookPicture: Codable {
+    /// Properties of a Facebook profile picture.
     public struct Properties: Codable {
+        /// The URL from which the profile picture can be retrieved.
         public var url: String
+        /// The height of the profile image, in pixels.
         public var height: Int
+        /// The width of the profile image, in pixels.
         public var width: Int
     }
+    /// Properties of the picture.
     public let data: FacebookPicture.Properties
 }
 
@@ -98,7 +103,7 @@ public struct FacebookTaggedPlaces: Codable {
     let paging: FacebookPaging
 }
 
-/// Data allowing further retreival of paginated data.
+/// Data allowing further retrieval of paginated data.
 public struct FacebookPaging: Codable {
     struct Cursors: Codable {
         let before: String
@@ -108,7 +113,7 @@ public struct FacebookPaging: Codable {
     let next: String
 }
 
-/// Data allowing further retreival of paginated timeline data.
+/// Data allowing further retrieval of paginated timeline data.
 public struct FacebookPostsPaging: Codable {
     let previous: String?
     let next: String?

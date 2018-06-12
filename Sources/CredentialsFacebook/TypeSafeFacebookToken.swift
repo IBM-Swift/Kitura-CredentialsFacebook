@@ -22,22 +22,21 @@ import Credentials
 import Foundation
 import TypeDecoder
 
-/// A protocol that a user's type can conform to representing a user authenticated using a
-/// Facebook OAuth token.
 /**
+ A protocol that a user's type can conform to representing a user authenticated using a
+ Facebook OAuth token.
  ### Usage Example: ###
+ ```swift
  public struct ExampleProfile: TypeSafeFacebookToken {
-    static var appID: String = "yourFacebookAppID"
-
-    let id: String
-
-    let name: String
- 
-    let email: String?
+    static var appID: String = "yourAppID"      // The id of your Facebook App
+    let id: String                              // Protocol requirement
+    let name: String                            // Protocol requirement: subject's display name
+    let email: String?                          // Optional Facebook field: may not be granted
  }
  router.get("/facebookProfile") { (user: ExampleProfile, respondWith: (ExampleProfile?, RequestError?) -> Void) in
     respondWith(user, nil)
  }
+ ```
  */
 public protocol TypeSafeFacebookToken: TypeSafeFacebook {
 
@@ -90,13 +89,15 @@ extension TypeSafeFacebookToken {
         }
     }
 
-    /// Authenticate incoming request using Facebook OAuth token.
+    /// Authenticate an incoming request using a Facebook OAuth token. This type of
+    /// authentication handles requests with a header of 'X-token-type: FacebookToken' and
+    /// an appropriate OAuth token supplied via the 'access_token' header.
     ///
-    /// - Parameter request: The `RouterRequest` object used to get information
-    ///                     about the request.
-    /// - Parameter response: The `RouterResponse` object used to respond to the
-    ///                       request.
-    /// - Parameter options: The dictionary of plugin specific options.
+    /// _Note: this function has been implemented for you._
+    ///
+    /// - Parameter request: The `RouterRequest` object used to get information about the
+    ///                      request.
+    /// - Parameter response: The `RouterResponse` object used to respond to the request.
     /// - Parameter onSuccess: The closure to invoke in the case of successful authentication.
     /// - Parameter onFailure: The closure to invoke in the case of an authentication failure.
     /// - Parameter onSkip: The closure to invoke when the plugin doesn't recognize
