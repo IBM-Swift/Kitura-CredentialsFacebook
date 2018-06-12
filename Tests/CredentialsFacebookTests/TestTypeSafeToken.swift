@@ -27,9 +27,11 @@ class TestTypeSafeToken : XCTestCase {
 
     static var allTests : [(String, (TestTypeSafeToken) -> () throws -> Void)] {
         return [
+            ("testDefaultTokenProfile", testDefaultTokenProfile),
+            ("testMinimalTokenProfile", testMinimalTokenProfile),
             ("testCache", testCache),
             ("testTwoInCache", testTwoInCache),
-            ("testCachedToken", testCachedToken),
+            ("testCachedProfile", testCachedProfile),
             ("testMissingTokenType", testMissingTokenType),
             ("testMissingAccessToken", testMissingAccessToken),
         ]
@@ -39,18 +41,69 @@ class TestTypeSafeToken : XCTestCase {
         doTearDown()
     }
     
-    let token = "testToken"
-    let token2 = "testToken2"
-    let testTokenProfile = FacebookTokenProfile(id: "123", name: "test", picture: FacebookPicture(data: FacebookPicture.Properties(url: "https://www.kitura.io/", height: 50, width: 50)), first_name: "Joe", last_name: "Bloggs", name_format: "{first}{last}", short_name: "Jo", middle_name: nil, email: "Joe.Bloggs@gmail.com", age_range: FacebookAgeRange(min: 21, max: nil), birthday: nil, friends: FacebookFriends(data: [""], summary: FacebookFriends.FriendSummary(total_count: 100)), gender: "male", hometown: nil, likes: nil, link: nil, location: nil, photos: nil, posts: nil, tagged_places: nil)
-    
+    // An example of a user-defined FacebookToken profile.
+    struct TestFacebookToken: TypeSafeFacebookToken, Equatable {
+        // Fields that should be retrieved from Facebook
+        var id: String
+        var name: String
+
+        // Fields that should be ignored (not part of the Facebook API)
+        var banana: String?
+        var randomNumber: Double?
+
+        // Static configuration for this type
+        static var appID: String = "123"
+
+        // Testing requirement: Equatable
+        // Only fields that are part of the Facebook API are compared.
+        static func == (lhs: TestFacebookToken, rhs: TestFacebookToken) -> Bool {
+            return lhs.id == rhs.id && lhs.name == rhs.name && lhs.provider == rhs.provider
+        }
+    }
+
+    let token = "Test token"
+    let token2 = "Test token 2"
+
+    // A Facebook response JSON fragment. Some optional fields are present (email, age_range,
+    // birthday, hometown). Other optional fields (gender, location, etc) are not provided.
+    //
+    // This data will be decoded into two types during these tests:
+    // - an instance of FacebookTokenProfile, which is capable of representing all fields (plus some that are absent from this fragment)
+    // - an instance of TestFacebookToken, which defines only 'id' and 'name'.
+    let testFacebookResponse = """
+    {\"name_format\":\"{first} {last}\",\"id\":\"12345678901234567\",\"age_range\":{\"min\":21},\"last_name\":\"Doe\",\"picture\":{\"data\":{\"url\":\"https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=12345678901234567&height=50&width=50&ext=1234567890&hash=AaBbCcDdEeFfGgHh\",\"width\":50,\"height\":50}},\"email\":\"john_doe@invalid.com\",\"short_name\":\"John\",\"birthday\":\"01/01/1970\",\"hometown\":{\"id\":\"123456789012345\",\"name\":\"Chicago\"},\"name\":\"John Doe\",\"first_name\":\"John\"}
+    """.data(using: .utf8)!
+
     let router = TestTypeSafeToken.setupCodableRouter()
 
-    func testCache() {
-        guard let body = try? JSONEncoder().encode(testTokenProfile) else {
-            return XCTFail("Failed to encode example profile")
+    // Tests that the pre-constructed FacebookTokenProfile type maps correctly to the
+    // JSON response retrieved from the Facebook user profile API.
+    func testDefaultTokenProfile() {
+        guard let profileInstance = FacebookTokenProfile.decodeFacebookResponse(data: testFacebookResponse) else {
+            return XCTFail("Facebook JSON response cannot be decoded to FacebookTokenProfile")
         }
-        guard let profileInstance = TestFacebookToken.constructSelf(body: body) else {
-            return XCTFail("Failed to create example profile")
+        // An equivalent test profile, constructed directly.
+        let testTokenProfile = FacebookTokenProfile(id: "12345678901234567", name: "John Doe", picture: FacebookPicture(data: FacebookPicture.Properties(url: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=12345678901234567&height=50&width=50&ext=1234567890&hash=AaBbCcDdEeFfGgHh", height: 50, width: 50)), first_name: "John", last_name: "Doe", name_format: "{first} {last}", short_name: "John", middle_name: nil, email: "john_doe@invalid.com", age_range: FacebookAgeRange(min: 21, max: nil), birthday: "01/01/1970", friends: nil, gender: nil, hometown: FacebookHometown(id: "123456789012345", name: "Chicago"), likes: nil, link: nil, location: nil, photos: nil, posts: nil, tagged_places: nil)
+
+        XCTAssertEqual(profileInstance, testTokenProfile, "The reference FacebookTokenProfile instance did not match the instance decoded from the Facebook JSON response")
+    }
+
+    // Tests that a minimal TypeSafeFacebookToken can be decoded from the same Facebook
+    // JSON response, and that it matches the content that we expect.
+    func testMinimalTokenProfile() {
+        guard let profileInstance = TestFacebookToken.decodeFacebookResponse(data: testFacebookResponse) else {
+            return XCTFail("Facebook JSON response cannot be decoded to FacebookTokenProfile")
+        }
+        XCTAssertEqual(profileInstance.banana, nil)
+        XCTAssertEqual(profileInstance.randomNumber, nil)
+        let expectedProfile = TestFacebookToken(id: "12345678901234567", name: "John Doe", banana: "Banana", randomNumber: 123.456)
+        XCTAssertEqual(profileInstance, expectedProfile, "The reference TestFacebookToken instance did not match the instance decoded from the Facebook JSON response")
+    }
+
+    // Tests that a profile can be saved and retreived from the cache
+    func testCache() {
+        guard let profileInstance = TestFacebookToken.decodeFacebookResponse(data: testFacebookResponse) else {
+            return XCTFail("Facebook JSON response cannot be decoded to FacebookTokenProfile")
         }
         TestFacebookToken.saveInCache(profile: profileInstance, token: token)
         guard let cacheProfile = TestFacebookToken.getFromCache(token: token) else {
@@ -59,15 +112,13 @@ class TestTypeSafeToken : XCTestCase {
         XCTAssertEqual(cacheProfile, profileInstance, "retrieved different profile from cache")
     }
 
+    // Tests that two different profiles can be saved and retreived from the cache
     func testTwoInCache() {
-        guard let body = try? JSONEncoder().encode(testTokenProfile) else {
-            return XCTFail("Failed to encode example profile")
+        guard let profileInstance1 = TestFacebookToken.decodeFacebookResponse(data: testFacebookResponse) else {
+            return XCTFail("Facebook JSON response cannot be decoded to TestFacebookToken")
         }
-        guard let profileInstance1 = TestFacebookToken.constructSelf(body: body) else {
-            return XCTFail("Failed to create example profile")
-        }
-        guard let profileInstance2 = FacebookTokenProfile.constructSelf(body: body) else {
-            return XCTFail("Failed to create example profile")
+        guard let profileInstance2 = FacebookTokenProfile.decodeFacebookResponse(data: testFacebookResponse) else {
+            return XCTFail("Facebook JSON response cannot be decoded to FacebookTokenProfile")
         }
         TestFacebookToken.saveInCache(profile: profileInstance1, token: token)
         FacebookTokenProfile.saveInCache(profile: profileInstance2, token: token2)
@@ -80,16 +131,19 @@ class TestTypeSafeToken : XCTestCase {
         XCTAssertEqual(cacheProfile1, profileInstance1, "retrieved different profile from cache1")
         XCTAssertEqual(cacheProfile2, profileInstance2, "retrieved different profile from cache2")
     }
-    
-    func testCachedToken() {
-        guard let body = try? JSONEncoder().encode(testTokenProfile) else {
-            return XCTFail("Failed to encode example profile")
-        }
-        guard let profileInstance = TestFacebookToken.constructSelf(body: body) else {
-            return XCTFail("Failed to create example profile")
+
+    // Tests that a profile stored in the token cache can be retrieved and returned by a Codable
+    // route that includes this middleware.
+    func testCachedProfile() {
+        guard let profileInstance = TestFacebookToken.decodeFacebookResponse(data: testFacebookResponse) else {
+            return XCTFail("Facebook JSON response cannot be decoded to FacebookTokenProfile")
         }
         TestFacebookToken.saveInCache(profile: profileInstance, token: token)
         performServerTest(router: router) { expectation in
+            // Note that currently, this request to /multipleHandlers will fail, as both handlers
+            // are invoked and both write a JSON response body (which is itself invalid JSON).
+            // If Codable routing in the future equates the writing of data with ending the
+            // response, this would work.
             self.performRequest(method: "get", path: "/singleHandler", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
@@ -102,34 +156,41 @@ class TestTypeSafeToken : XCTestCase {
                     let profile = try decoder.decode(TestFacebookToken.self, from: tokenData)
                     XCTAssertEqual(profile, profileInstance, "Body \(profile) is not equal to \(profileInstance)")
                 } catch {
-                    XCTFail("No response body: \(error)")
+                    XCTFail("Could not decode response: \(error)")
                 }
                 expectation.fulfill()
             }, headers: ["X-token-type" : "FacebookToken", "access_token" : self.token])
         }
     }
-    
+
+    // Tests that when a request to a Codable route that includes this middleware does not
+    // contain the matching X-token-type header, the middleware skips authentication and a
+    // second handler is instead invoked.
     func testMissingTokenType() {
         performServerTest(router: router) { expectation in
             self.performRequest(method: "get", path: "/multipleHandlers", callback: {response in
                 XCTAssertNotNil(response, "ERROR!!! ClientRequest response object was nil")
                 XCTAssertEqual(response?.statusCode, HTTPStatusCode.OK, "HTTP Status code was \(String(describing: response?.statusCode))")
                 do {
-                    guard let body = try response?.readString(), let userData = body.data(using: .utf8) else {
+                    guard let body = try response?.readString(), let responseData = body.data(using: .utf8) else {
                         XCTFail("No response body")
                         return
                     }
                     let decoder = JSONDecoder()
-                    let profile = try decoder.decode(User.self, from: userData)
-                    XCTAssertEqual(profile.id, "123", "Body \(profile.id) is not equal to 123")
+                    let testResponse = try decoder.decode(TestFacebookToken.self, from: responseData)
+                    let expectedResponse = TestFacebookToken(id: "123", name: "abc", banana: nil, randomNumber: nil)
+                    XCTAssertEqual(testResponse, expectedResponse, "Response from second handler did not contain expected data")
                 } catch {
-                    XCTFail("No response body")
+                    XCTFail("Could not decode response: \(error)")
                 }
                 expectation.fulfill()
             }, headers: ["access_token" : self.token])
         }
     }
-    
+
+    // Tests that when a request to a Codable route that includes this middleware contains
+    // the matching X-token-type header, but does not supply an access_token, the middleware
+    // fails authentication and returns unauthorized.
     func testMissingAccessToken() {
         performServerTest(router: router) { expectation in
             self.performRequest(method: "get", path: "/multipleHandlers", callback: {response in
@@ -140,44 +201,22 @@ class TestTypeSafeToken : XCTestCase {
         }
     }
 
-    struct TestFacebookToken: TypeSafeFacebookToken, Equatable {
-        var id: String
-        
-        var name: String
-        
-        static var appID: String = "123"
-        
-        static func == (lhs: TestFacebookToken, rhs: TestFacebookToken) -> Bool {
-            return lhs.id == rhs.id && lhs.name == rhs.name && lhs.provider == rhs.provider
-        }
-        
-    }
-   
     static func setupCodableRouter() -> Router {
         let router = Router()
         PrintLogger.use(colored: true)
-        
+
         router.get("/singleHandler") { (profile: TestFacebookToken, respondWith: (TestFacebookToken?, RequestError?) -> Void) in
             respondWith(profile, nil)
         }
-        
+
         router.get("/multipleHandlers") { (profile: TestFacebookToken, respondWith: (TestFacebookToken?, RequestError?) -> Void) in
             respondWith(profile, nil)
         }
-        router.get("/multipleHandlers") { (respondWith: (User?, RequestError?) -> Void) in
-            respondWith(User(id: "123"), nil)
-        }
-        
-        return router
-    }
-    
-    struct User: Codable {
-        let id: String
-    }
-}
 
-extension FacebookTokenProfile: Equatable {
-    public static func == (lhs: FacebookTokenProfile, rhs: FacebookTokenProfile) -> Bool {
-        return lhs.id == rhs.id && lhs.name == rhs.name && lhs.provider == rhs.provider
+        router.get("/multipleHandlers") { (respondWith: (TestFacebookToken?, RequestError?) -> Void) in
+            respondWith(TestFacebookToken(id: "123", name: "abc", banana: nil, randomNumber: nil), nil)
+        }
+
+        return router
     }
 }
