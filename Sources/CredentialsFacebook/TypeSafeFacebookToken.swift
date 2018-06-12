@@ -39,7 +39,7 @@ import TypeDecoder
     respondWith(user, nil)
  }
  */
-public protocol TypeSafeFacebookToken: TypeSafeCredentials {
+public protocol TypeSafeFacebookToken: TypeSafeFacebook {
 
     // MARK: Instance fields
 
@@ -50,17 +50,6 @@ public protocol TypeSafeFacebookToken: TypeSafeCredentials {
     /// The subject's display name.
     var name: String { get }
 
-    // MARK: Static configuration for the type
-
-    /// The OAuth client id ('AppID') that tokens should correspond to. This value must be
-    /// set to match the Facebook OAuth app that was used to issue the token. Tokens that
-    /// are received but that do not match this value will be rejected.
-    static var appID: String { get }
-
-    /// A set of valid field names that can be requested from Facebook. A default set is
-    /// implemented for you, however this property can be overridden if needed to customize
-    /// or extend the set.
-    static var validFieldNames: Set<String> { get }
 }
 
 /// The cache element for keeping facebook profile information.
@@ -88,7 +77,7 @@ private struct TypeSafeFacebookTokenCache {
 
 extension TypeSafeFacebookToken {
 
-    // Associates a token cache with the user's type. This relieves the user from having to
+    // Associates a profile cache with the user's type. This relieves the user from having to
     // declare a usersCache property on their conforming type.
     private static var usersCache: NSCache<NSString, FacebookCacheElement> {
         let key = String(reflecting: Self.self)
@@ -99,11 +88,6 @@ extension TypeSafeFacebookToken {
             TypeSafeFacebookTokenCache.cacheForType[key] = usersCache
             return usersCache
         }
-    }
-
-    /// Provides a default provider name of `Facebook`.
-    public var provider: String {
-        return "Facebook"
     }
 
     /// Authenticate incoming request using Facebook OAuth token.
@@ -146,103 +130,14 @@ extension TypeSafeFacebookToken {
                 return onFailure(nil, nil)
             }
             // Attempt to retrieve the subject's profile from Facebook.
-            getTokenProfile(token: token, callback: { (tokenProfile) in
+            getFacebookProfile(token: token, callback: { (tokenProfile) in
                 guard let tokenProfile = tokenProfile else {
                     Log.error("Failed to retrieve Facebook profile for token")
                     return onFailure(nil, nil)
                 }
+                saveInCache(profile: tokenProfile, token: token)
                 return onSuccess(tokenProfile)
             })
-        }
-    }
-
-    /// Defines the list of valid fields that can be requested from Facebook.
-    /// Source: https://developers.facebook.com/docs/facebook-login/permissions/v3.0#reference-extended-profile
-    ///
-    /// Note that this is for convenience and not an exhaustive list.
-    public static var validFieldNames: Set<String> {
-        return [
-            // Default fields representing parts of a person's public profile. These can always be requested:
-            "id", "first_name", "last_name", "name", "name_format", "picture", "short_name",
-            // Optional fields that the user may not have provided within their profile:
-            "middle_name",
-            // Optional fields that not need app review, but the user may decline to share the information:
-            "email",
-            // All other permissions require a facebook app review prior to use:
-            "age_range", "birthday", "friends", "gender", "hometown", "likes", "link", "location", "photos", "posts", "tagged_places"
-        ]
-    }
-
-    // Decodes the user's type using the TypeDecoder, in order to find the fields that we
-    // should request from Facebook on behalf of the user.
-    //
-    // After finding a shortlist of fields, we filter on the fields Facebook can provide,
-    // which is crucial because Facebook will return Bad Request if asked for anything
-    // other than the documented field names.
-    static func decodeValidFields() -> String {
-        var decodedString = [String]()
-        if let fieldsInfo = try? TypeDecoder.decode(Self.self) {
-            if case .keyed(_, let dict) = fieldsInfo {
-                for (key, _) in dict {
-                    decodedString.append(key)
-                }
-            }
-        }
-        return decodedString.filter(validFieldNames.contains).joined(separator: ",")
-    }
-
-    static func validateAppID(token: String, callback: @escaping (Bool) -> Void) {
-        // Send the app id request to facebook
-        let fbAppReq = HTTP.request("https://graph.facebook.com/app?access_token=\(token)") { response in
-            // check you have recieved an app id from facebook which matches the app id you set
-            var body = Data()
-            guard let response = response,
-                response.statusCode == HTTPStatusCode.OK,
-                let _ = try? response.readAllData(into: &body),
-                let appDictionary = try? JSONSerialization.jsonObject(with: body, options: []) as? [String : Any],
-                Self.appID == appDictionary?["id"] as? String
-                else {
-                    return callback(false)
-            }
-            return callback(true)
-        }
-        fbAppReq.end()
-    }
-
-    static func getTokenProfile(token: String, callback: @escaping (Self?) -> Void) {
-        let fieldsInfo = decodeValidFields()
-        let fbreq = HTTP.request("https://graph.facebook.com/me?access_token=\(token)&fields=\(fieldsInfo)") { response in
-            // Check we have recieved an OK response from Facebook
-            guard let response = response else {
-                Log.error("Request to facebook failed: response was nil")
-                return callback(nil)
-            }
-            var body = Data()
-            guard response.statusCode == HTTPStatusCode.OK,
-                let _ = try? response.readAllData(into: &body)
-                else {
-                    Log.error("Facebook request failed: statusCode=\(response.statusCode), body=\(String(data: body, encoding: .utf8) ?? "")")
-                    return callback(nil)
-            }
-            // Attempt to construct the user's type by decoding the Facebook response. This could
-            // fail if the user has defined any additional, non-optional fields on their type.
-            guard let profile = constructSelf(body: body) else {
-                Log.debug("Facebook response data: statusCode=\(response.statusCode), body=\(String(data: body, encoding: .utf8) ?? "")")
-                return callback(nil)
-            }
-            saveInCache(profile: profile, token: token)
-            return callback(profile)
-        }
-        fbreq.end()
-    }
-
-    static func constructSelf(body: Data) -> Self? {
-        let decoder = JSONDecoder()
-        do {
-            return try decoder.decode(Self.self, from: body)
-        } catch {
-            Log.error("Failed to decode \(Self.self) from Facebook response, error=\(error)")
-            return nil
         }
     }
 
@@ -264,4 +159,5 @@ extension TypeSafeFacebookToken {
         #endif
         Self.usersCache.setObject(FacebookCacheElement(profile: profile), forKey: key)
     }
+
 }
