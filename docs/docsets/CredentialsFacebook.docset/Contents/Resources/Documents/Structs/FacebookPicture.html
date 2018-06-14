@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>CredentialsFacebookOptions Structure Reference</title>
+    <title>FacebookPicture Structure Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Struct/CredentialsFacebookOptions" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Struct/FacebookPicture" class="dashAnchor"></a>
 
-    <a title="CredentialsFacebookOptions Structure Reference"></a>
+    <a title="FacebookPicture Structure Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">CredentialsFacebook Reference</a>
       <img class="carat" src="../img/carat.png" />
-      CredentialsFacebookOptions Structure Reference
+      FacebookPicture Structure Reference
     </p>
 
     <div class="content-wrapper">
@@ -125,14 +125,17 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>CredentialsFacebookOptions</h1>
+            <h1>FacebookPicture</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">CredentialsFacebookOptions</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">FacebookPicture</span><span class="p">:</span> <span class="kt">Codable</span></code></pre>
 
                 </div>
               </div>
-            <p>A list of keys to be used in options dictionary for authentication with Facebook.</p>
+            <p>A structure representing the metadata provided by the Facebook API corresponding
+to a subject&rsquo;s profile picture. This includes the URL of the image and its width and height.
+If you wish to retrieve this information, include <code>let picture: FacebookPicture</code> in your
+user profile.</p>
 
           </div>
         </section>
@@ -144,9 +147,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:19CredentialsFacebook0aB7OptionsV5scopeSSvpZ"></a>
-                    <a name="//apple_ref/swift/Variable/scope" class="dashAnchor"></a>
-                    <a class="token" href="#/s:19CredentialsFacebook0aB7OptionsV5scopeSSvpZ">scope</a>
+                    <a name="/s:19CredentialsFacebook0B7PictureV10PropertiesV"></a>
+                    <a name="//apple_ref/swift/Struct/Properties" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B7PictureV10PropertiesV">Properties</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -154,16 +157,15 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p><a href="https://developers.facebook.com/docs/facebook-login/permissions">Facebook permissions</a>
-The value of scope should be either a String of comma-separated requsted scopes, or an array 
-of String with the requested scopes.</p>
+                        <p>Properties of a Facebook profile picture.</p>
 
+                        <a href="../Structs/FacebookPicture/Properties.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">scope</span> <span class="o">=</span> <span class="s">"scope"</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Properties</span><span class="p">:</span> <span class="kt">Codable</span></code></pre>
 
                         </div>
                       </div>
@@ -173,9 +175,9 @@ of String with the requested scopes.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:19CredentialsFacebook0aB7OptionsV19userProfileDelegateSSvpZ"></a>
-                    <a name="//apple_ref/swift/Variable/userProfileDelegate" class="dashAnchor"></a>
-                    <a class="token" href="#/s:19CredentialsFacebook0aB7OptionsV19userProfileDelegateSSvpZ">userProfileDelegate</a>
+                    <a name="/s:19CredentialsFacebook0B7PictureV4dataAC10PropertiesVvp"></a>
+                    <a name="//apple_ref/swift/Property/data" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B7PictureV4dataAC10PropertiesVvp">data</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -183,44 +185,14 @@ of String with the requested scopes.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>An implementation of <code>Credentials.UserProfileDelegate</code> to update user profile.</p>
+                        <p>Properties of the picture.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">userProfileDelegate</span> <span class="o">=</span> <span class="s">"userProfileDelegate"</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:19CredentialsFacebook0aB7OptionsV6fieldsSSvpZ"></a>
-                    <a name="//apple_ref/swift/Variable/fields" class="dashAnchor"></a>
-                    <a class="token" href="#/s:19CredentialsFacebook0aB7OptionsV6fieldsSSvpZ">fields</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A list of <a href="https://developers.facebook.com/docs/graph-api/reference/user">fields</a> to ask for in authentication.
-The value of fields should be either a String of comma-separated requsted fields, or an array
-of String with the requested fields.
-If left blank, authentication only returns an <q>id</q> and <q>name</q> for the user.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">fields</span> <span class="o">=</span> <span class="s">"fields"</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">FacebookPicture</span><span class="o">.</span><span class="kt"><a href="../Structs/FacebookPicture/Properties.html">Properties</a></span></code></pre>
 
                         </div>
                       </div>

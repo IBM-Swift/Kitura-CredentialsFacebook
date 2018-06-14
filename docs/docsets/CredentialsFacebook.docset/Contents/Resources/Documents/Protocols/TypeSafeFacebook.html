@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>CredentialsFacebookOptions Structure Reference</title>
+    <title>TypeSafeFacebook Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Struct/CredentialsFacebookOptions" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Protocol/TypeSafeFacebook" class="dashAnchor"></a>
 
-    <a title="CredentialsFacebookOptions Structure Reference"></a>
+    <a title="TypeSafeFacebook Protocol Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">CredentialsFacebook Reference</a>
       <img class="carat" src="../img/carat.png" />
-      CredentialsFacebookOptions Structure Reference
+      TypeSafeFacebook Protocol Reference
     </p>
 
     <div class="content-wrapper">
@@ -125,14 +125,18 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>CredentialsFacebookOptions</h1>
+            <h1>TypeSafeFacebook</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">CredentialsFacebookOptions</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">TypeSafeFacebook</span><span class="p">:</span> <span class="kt">TypeSafeCredentials</span></code></pre>
 
                 </div>
               </div>
-            <p>A list of keys to be used in options dictionary for authentication with Facebook.</p>
+            <p>A protocol that defines common attributes of Facebook authentication methods.</p>
+
+<p>It is not intended for a user&rsquo;s type to conform to this protocol directly. Instead,
+your type should conform to a specific authentication type, such as
+<code><a href="../Protocols/TypeSafeFacebookToken.html">TypeSafeFacebookToken</a></code>.</p>
 
           </div>
         </section>
@@ -144,9 +148,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:19CredentialsFacebook0aB7OptionsV5scopeSSvpZ"></a>
-                    <a name="//apple_ref/swift/Variable/scope" class="dashAnchor"></a>
-                    <a class="token" href="#/s:19CredentialsFacebook0aB7OptionsV5scopeSSvpZ">scope</a>
+                    <a name="/s:19CredentialsFacebook08TypeSafeB0P5appIDSSvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/appID" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook08TypeSafeB0P5appIDSSvpZ">appID</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -154,16 +158,16 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p><a href="https://developers.facebook.com/docs/facebook-login/permissions">Facebook permissions</a>
-The value of scope should be either a String of comma-separated requsted scopes, or an array 
-of String with the requested scopes.</p>
+                        <p>The OAuth client id (&lsquo;AppID&rsquo;) that tokens should correspond to. This value must be
+set to match the Facebook OAuth app that was used to issue the token. Tokens that
+do not match this value will be rejected.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">scope</span> <span class="o">=</span> <span class="s">"scope"</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="k">var</span> <span class="nv">appID</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
@@ -173,54 +177,71 @@ of String with the requested scopes.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:19CredentialsFacebook0aB7OptionsV19userProfileDelegateSSvpZ"></a>
-                    <a name="//apple_ref/swift/Variable/userProfileDelegate" class="dashAnchor"></a>
-                    <a class="token" href="#/s:19CredentialsFacebook0aB7OptionsV19userProfileDelegateSSvpZ">userProfileDelegate</a>
+                    <a name="/s:19CredentialsFacebook08TypeSafeB0P15validFieldNamess3SetVySSGvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/validFieldNames" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook08TypeSafeB0P15validFieldNamess3SetVySSGvpZ">validFieldNames</a>
                     </code>
+                      <span class="declaration-note">
+                        Default implementation
+                      </span>
                   </div>
                   <div class="height-container">
                     <div class="pointer-container"></div>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>An implementation of <code>Credentials.UserProfileDelegate</code> to update user profile.</p>
+                        <p>A set of valid field names that can be requested from Facebook. A default set is
+implemented for you, however this property can be overridden to customize or
+extend the set.</p>
+
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        <p>Defines the list of valid fields that can be requested from Facebook.
+Source: <a href="https://developers.facebook.com/docs/facebook-login/permissions/v3.0#reference-default_fields">https://developers.facebook.com/docs/facebook-login/permissions/v3.0#reference-default_fields</a></p>
+
+<p>Note that this is for convenience and not an exhaustive list.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">userProfileDelegate</span> <span class="o">=</span> <span class="s">"userProfileDelegate"</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="k">var</span> <span class="nv">validFieldNames</span><span class="p">:</span> <span class="kt">Set</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span></code></pre>
 
                         </div>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:19CredentialsFacebook0aB7OptionsV6fieldsSSvpZ"></a>
-                    <a name="//apple_ref/swift/Variable/fields" class="dashAnchor"></a>
-                    <a class="token" href="#/s:19CredentialsFacebook0aB7OptionsV6fieldsSSvpZ">fields</a>
+                    <a name="/s:19CredentialsFacebook08TypeSafeB0PAAE8providerSSvp"></a>
+                    <a name="//apple_ref/swift/Property/provider" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook08TypeSafeB0PAAE8providerSSvp">provider</a>
                     </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
                   </div>
                   <div class="height-container">
                     <div class="pointer-container"></div>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A list of <a href="https://developers.facebook.com/docs/graph-api/reference/user">fields</a> to ask for in authentication.
-The value of fields should be either a String of comma-separated requsted fields, or an array
-of String with the requested fields.
-If left blank, authentication only returns an <q>id</q> and <q>name</q> for the user.</p>
+                        <p>Provides a default provider name of <code>Facebook</code>.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">fields</span> <span class="o">=</span> <span class="s">"fields"</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">provider</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>

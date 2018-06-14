@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>FacebookTokenProfile Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Struct/FacebookTokenProfile" class="dashAnchor"></a>
+
+    <a title="FacebookTokenProfile Structure Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          CredentialsFacebook Docs
+        </a>
+         (100% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/IBM-Swift/Kitura-CredentialsFacebook/">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">CredentialsFacebook Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      FacebookTokenProfile Structure Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/CredentialsFacebook.html">CredentialsFacebook</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/CredentialsFacebookToken.html">CredentialsFacebookToken</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TypeSafeFacebook.html">TypeSafeFacebook</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TypeSafeFacebookToken.html">TypeSafeFacebookToken</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/CredentialsFacebookOptions.html">CredentialsFacebookOptions</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B8AgeRangeV">FacebookAgeRange</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B7FriendsV">FacebookFriends</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B8HometownV">FacebookHometown</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B5LikesV">FacebookLikes</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B8LocationV">FacebookLocation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B6PagingV">FacebookPaging</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B6PhotosV">FacebookPhotos</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/FacebookPicture.html">FacebookPicture</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/FacebookPicture/Properties.html">– Properties</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B5PostsV">FacebookPosts</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B11PostsPagingV">FacebookPostsPaging</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B12TaggedPlacesV">FacebookTaggedPlaces</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/FacebookTokenProfile.html">FacebookTokenProfile</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content">
+            <h1>FacebookTokenProfile</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">FacebookTokenProfile</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TypeSafeFacebookToken.html">TypeSafeFacebookToken</a></span></code></pre>
+
+                </div>
+              </div>
+            <p>A pre-constructed TypeSafeFacebookToken which contains the default fields plus examples
+of optional fields that can be requested from Facebook.
+See: <a href="https://developers.facebook.com/docs/facebook-login/permissions/v3.0#reference-default_fields">https://developers.facebook.com/docs/facebook-login/permissions/v3.0#reference-default_fields</a></p>
+
+<p>Note that the Optional fields will only be initialized if the user&rsquo;s OAuth token grants
+access to the data, and many extended permissions require a Facebook app review prior
+to that app being allowed to request them.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="kt">FacebookTokenProfile</span><span class="o">.</span><span class="n">appID</span> <span class="o">=</span> <span class="s">"yourAppID"</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/facebookProfile"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="kt">FacebookTokenProfile</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">FacebookTokenProfile</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV5appIDSSvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/appID" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV5appIDSSvpZ">appID</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The OAuth client id (&lsquo;AppID&rsquo;) that tokens should correspond to. This value must be
+set to match the Facebook OAuth app that was used to issue the token. Tokens that
+are received but that do not match this value will be rejected.</p>
+
+<p>When using the default <code>FacebookTokenProfile</code>, your application must set this value
+prior to use:</p>
+<pre class="highlight swift"><code>    <span class="kt">FacebookTokenProfile</span><span class="o">.</span><span class="n">appID</span> <span class="o">=</span> <span class="s">"&lt;your OAuth client id&gt;"</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">appID</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">""</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV2idSSvp"></a>
+                    <a name="//apple_ref/swift/Property/id" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV2idSSvp">id</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The application-scoped ID field. Note that this field uniquely identifies a user
+wihin the context of the application represented by the token.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV4nameSSvp"></a>
+                    <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV4nameSSvp">name</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The subject&rsquo;s display name.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV7pictureAA0B7PictureVvp"></a>
+                    <a name="//apple_ref/swift/Property/picture" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV7pictureAA0B7PictureVvp">picture</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Metadata allowing access to the subject&rsquo;s profile picture.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">picture</span><span class="p">:</span> <span class="kt"><a href="../Structs/FacebookPicture.html">FacebookPicture</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV10first_nameSSvp"></a>
+                    <a name="//apple_ref/swift/Property/first_name" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV10first_nameSSvp">first_name</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The subject&rsquo;s first name.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">first_name</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV9last_nameSSvp"></a>
+                    <a name="//apple_ref/swift/Property/last_name" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV9last_nameSSvp">last_name</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The subject&rsquo;s last name.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">last_name</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV11name_formatSSvp"></a>
+                    <a name="//apple_ref/swift/Property/name_format" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV11name_formatSSvp">name_format</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The subject&rsquo;s chosen name format, e.g.: <code>&quot;{first} {last}&quot;</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">name_format</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV10short_nameSSvp"></a>
+                    <a name="//apple_ref/swift/Property/short_name" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV10short_nameSSvp">short_name</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The subject&rsquo;s chosen short name.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">short_name</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Optional%20fields"></a>
+                <a name="//apple_ref/swift/Section/Optional fields" class="dashAnchor"></a>
+                <a href="#/Optional%20fields">
+                  <h3 class="section-name">Optional fields</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV11middle_nameSSSgvp"></a>
+                    <a name="//apple_ref/swift/Property/middle_name" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV11middle_nameSSSgvp">middle_name</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The subject&rsquo;s middle name.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">middle_name</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV5emailSSSgvp"></a>
+                    <a name="//apple_ref/swift/Property/email" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV5emailSSSgvp">email</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The subject&rsquo;s e-mail address.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">email</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Protected%20fields"></a>
+                <a name="//apple_ref/swift/Section/Protected fields" class="dashAnchor"></a>
+                <a href="#/Protected%20fields">
+                  <h3 class="section-name">Protected fields</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV9age_rangeAA0B8AgeRangeVSgvp"></a>
+                    <a name="//apple_ref/swift/Property/age_range" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV9age_rangeAA0B8AgeRangeVSgvp">age_range</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The subject&rsquo;s age range.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">age_range</span><span class="p">:</span> <span class="kt"><a href="../Structs.html#/s:19CredentialsFacebook0B8AgeRangeV">FacebookAgeRange</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV8birthdaySSSgvp"></a>
+                    <a name="//apple_ref/swift/Property/birthday" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV8birthdaySSSgvp">birthday</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The subject&rsquo;s birthday, in the format <code>MM/DD/YYYY</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">birthday</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV7friendsAA0B7FriendsVSgvp"></a>
+                    <a name="//apple_ref/swift/Property/friends" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV7friendsAA0B7FriendsVSgvp">friends</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Information on the subject&rsquo;s friends. Note that only friends of this user that
+have also granted this permission to the same OAuth application will be detailed.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">friends</span><span class="p">:</span> <span class="kt"><a href="../Structs.html#/s:19CredentialsFacebook0B7FriendsV">FacebookFriends</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV6genderSSSgvp"></a>
+                    <a name="//apple_ref/swift/Property/gender" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV6genderSSSgvp">gender</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The subject&rsquo;s gender.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">gender</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV8hometownAA0B8HometownVSgvp"></a>
+                    <a name="//apple_ref/swift/Property/hometown" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV8hometownAA0B8HometownVSgvp">hometown</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Information about the subject&rsquo;s home town.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">hometown</span><span class="p">:</span> <span class="kt"><a href="../Structs.html#/s:19CredentialsFacebook0B8HometownV">FacebookHometown</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV5likesAA0B5LikesVSgvp"></a>
+                    <a name="//apple_ref/swift/Property/likes" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV5likesAA0B5LikesVSgvp">likes</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Information about items the subject has &lsquo;liked&rsquo;.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">likes</span><span class="p">:</span> <span class="kt"><a href="../Structs.html#/s:19CredentialsFacebook0B5LikesV">FacebookLikes</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV4linkSSSgvp"></a>
+                    <a name="//apple_ref/swift/Property/link" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV4linkSSSgvp">link</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A link to the subject&rsquo;s profile for another user of the app.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">link</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV8locationAA0B8LocationVSgvp"></a>
+                    <a name="//apple_ref/swift/Property/location" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV8locationAA0B8LocationVSgvp">location</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The subject&rsquo;s location (current city) as specified on their profile.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">location</span><span class="p">:</span> <span class="kt"><a href="../Structs.html#/s:19CredentialsFacebook0B8LocationV">FacebookLocation</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV6photosAA0B6PhotosVSgvp"></a>
+                    <a name="//apple_ref/swift/Property/photos" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV6photosAA0B6PhotosVSgvp">photos</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Metadata about the subject&rsquo;s photos, which can be used to access the photos via the User API:
+<a href="https://developers.facebook.com/docs/graph-api/reference/user/photos">https://developers.facebook.com/docs/graph-api/reference/user/photos</a></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">photos</span><span class="p">:</span> <span class="kt"><a href="../Structs.html#/s:19CredentialsFacebook0B6PhotosV">FacebookPhotos</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV5postsAA0B5PostsVSgvp"></a>
+                    <a name="//apple_ref/swift/Property/posts" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV5postsAA0B5PostsVSgvp">posts</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Data from the subject&rsquo;s timeline, including posts they have created and been tagged in.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">posts</span><span class="p">:</span> <span class="kt"><a href="../Structs.html#/s:19CredentialsFacebook0B5PostsV">FacebookPosts</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:19CredentialsFacebook0B12TokenProfileV13tagged_placesAA0B12TaggedPlacesVSgvp"></a>
+                    <a name="//apple_ref/swift/Property/tagged_places" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook0B12TokenProfileV13tagged_placesAA0B12TaggedPlacesVSgvp">tagged_places</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A list of places that the subject has been tagged at.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">tagged_places</span><span class="p">:</span> <span class="kt"><a href="../Structs.html#/s:19CredentialsFacebook0B12TaggedPlacesV">FacebookTaggedPlaces</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-06-14)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>

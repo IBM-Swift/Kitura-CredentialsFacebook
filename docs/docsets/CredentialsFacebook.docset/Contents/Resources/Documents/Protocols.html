@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Classes  Reference</title>
+    <title>Protocols  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset="utf-8">
@@ -15,7 +15,7 @@
   <body>
 
 
-    <a title="Classes  Reference"></a>
+    <a title="Protocols  Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -43,7 +43,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="index.html">CredentialsFacebook Reference</a>
       <img class="carat" src="img/carat.png" />
-      Classes  Reference
+      Protocols  Reference
     </p>
 
     <div class="content-wrapper">
@@ -124,8 +124,8 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>Classes</h1>
-            <p>The following classes are available globally.</p>
+            <h1>Protocols</h1>
+            <p>The following protocols are available globally.</p>
 
           </div>
         </section>
@@ -137,9 +137,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:19CredentialsFacebookAAC"></a>
-                    <a name="//apple_ref/swift/Class/CredentialsFacebook" class="dashAnchor"></a>
-                    <a class="token" href="#/s:19CredentialsFacebookAAC">CredentialsFacebook</a>
+                    <a name="/s:19CredentialsFacebook08TypeSafeB0P"></a>
+                    <a name="//apple_ref/swift/Protocol/TypeSafeFacebook" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook08TypeSafeB0P">TypeSafeFacebook</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -147,17 +147,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Authentication using Facebook web login with OAuth.
-See <a href="https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow">Facebook&rsquo;s manual</a>
-for more information.</p>
+                        <p>A protocol that defines common attributes of Facebook authentication methods.</p>
 
-                        <a href="Classes/CredentialsFacebook.html" class="slightly-smaller">See more</a>
+<p>It is not intended for a user&rsquo;s type to conform to this protocol directly. Instead,
+your type should conform to a specific authentication type, such as
+<code><a href="Protocols/TypeSafeFacebookToken.html">TypeSafeFacebookToken</a></code>.</p>
+
+                        <a href="Protocols/TypeSafeFacebook.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">CredentialsFacebook</span><span class="p">:</span> <span class="kt">CredentialsPluginProtocol</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">TypeSafeFacebook</span><span class="p">:</span> <span class="kt">TypeSafeCredentials</span></code></pre>
 
                         </div>
                       </div>
@@ -171,9 +173,9 @@ for more information.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:19CredentialsFacebook0aB5TokenC"></a>
-                    <a name="//apple_ref/swift/Class/CredentialsFacebookToken" class="dashAnchor"></a>
-                    <a class="token" href="#/s:19CredentialsFacebook0aB5TokenC">CredentialsFacebookToken</a>
+                    <a name="/s:19CredentialsFacebook08TypeSafeB5TokenP"></a>
+                    <a name="//apple_ref/swift/Protocol/TypeSafeFacebookToken" class="dashAnchor"></a>
+                    <a class="token" href="#/s:19CredentialsFacebook08TypeSafeB5TokenP">TypeSafeFacebookToken</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -181,15 +183,27 @@ for more information.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Authentication using Facebook OAuth token.</p>
+                        <p>A protocol that a user&rsquo;s type can conform to representing a user authenticated using a
+Facebook OAuth token.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ExampleProfile</span><span class="p">:</span> <span class="kt">TypeSafeFacebookToken</span> <span class="p">{</span>
+   <span class="kd">static</span> <span class="k">var</span> <span class="nv">appID</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"yourAppID"</span>      <span class="c1">// The id of your Facebook App</span>
+   <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">String</span>                              <span class="c1">// Protocol requirement</span>
+   <span class="k">let</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span>                            <span class="c1">// Protocol requirement: subject's display name</span>
+   <span class="k">let</span> <span class="nv">email</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span>                          <span class="c1">// Optional Facebook field: may not be granted</span>
+<span class="p">}</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/facebookProfile"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="kt">ExampleProfile</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">ExampleProfile</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+   <span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
 
-                        <a href="Classes/CredentialsFacebookToken.html" class="slightly-smaller">See more</a>
+                        <a href="Protocols/TypeSafeFacebookToken.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">CredentialsFacebookToken</span><span class="p">:</span> <span class="kt">CredentialsPluginProtocol</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">TypeSafeFacebookToken</span><span class="p">:</span> <span class="kt"><a href="Protocols/TypeSafeFacebook.html">TypeSafeFacebook</a></span></code></pre>
 
                         </div>
                       </div>

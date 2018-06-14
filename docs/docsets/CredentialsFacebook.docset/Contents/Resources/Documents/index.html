@@ -8,6 +8,9 @@
     <script src="js/jquery.min.js" defer></script>
     <script src="js/jazzy.js" defer></script>
     
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
   </head>
   <body>
 
@@ -20,6 +23,12 @@
           CredentialsFacebook Docs
         </a>
          (100% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
       </p>
     
         <p class="header-col header-col--secondary">
@@ -52,10 +61,60 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Structs.html">Structs</a>
+            <a class="nav-group-name-link" href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/TypeSafeFacebook.html">TypeSafeFacebook</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/TypeSafeFacebookToken.html">TypeSafeFacebookToken</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Structs.html">Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/CredentialsFacebookOptions.html">CredentialsFacebookOptions</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs.html#/s:19CredentialsFacebook0B8AgeRangeV">FacebookAgeRange</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs.html#/s:19CredentialsFacebook0B7FriendsV">FacebookFriends</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs.html#/s:19CredentialsFacebook0B8HometownV">FacebookHometown</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs.html#/s:19CredentialsFacebook0B5LikesV">FacebookLikes</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs.html#/s:19CredentialsFacebook0B8LocationV">FacebookLocation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs.html#/s:19CredentialsFacebook0B6PagingV">FacebookPaging</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs.html#/s:19CredentialsFacebook0B6PhotosV">FacebookPhotos</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FacebookPicture.html">FacebookPicture</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FacebookPicture/Properties.html">– Properties</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs.html#/s:19CredentialsFacebook0B5PostsV">FacebookPosts</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs.html#/s:19CredentialsFacebook0B11PostsPagingV">FacebookPostsPaging</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs.html#/s:19CredentialsFacebook0B12TaggedPlacesV">FacebookTaggedPlaces</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/FacebookTokenProfile.html">FacebookTokenProfile</a>
               </li>
             </ul>
           </li>
@@ -66,17 +125,33 @@
         <section class="section">
           <div class="section-content">
             
-            <a href='#kitura-credentialsfacebook' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h1 id='kitura-credentialsfacebook'>Kitura-CredentialsFacebook</h1>
+            <p align="center">
+    <a href="http://kitura.io/">
+        <img src="https://raw.githubusercontent.com/IBM-Swift/Kitura/master/Sources/Kitura/resources/kitura-bird.svg?sanitize=true" height="100" alt="Kitura">
+    </a>
+</p>
+
+<p align="center">
+    <a href="http://www.kitura.io/">
+    <img src="https://img.shields.io/badge/docs-kitura.io-1FBCE4.svg" alt="Docs">
+    </a>
+    <a href="https://travis-ci.org/IBM-Swift/Kitura-CredentialsFacebook">
+    <img src="https://travis-ci.org/IBM-Swift/Kitura-CredentialsFacebook.svg?branch=master" alt="Build Status - Master">
+    </a>
+    <img src="https://img.shields.io/badge/os-macOS-green.svg?style=flat" alt="macOS">
+    <img src="https://img.shields.io/badge/os-linux-green.svg?style=flat" alt="Linux">
+    <img src="https://img.shields.io/badge/license-Apache2-blue.svg?style=flat" alt="Apache 2">
+    <a href="http://swift-at-ibm-slack.mybluemix.net/">
+    <img src="http://swift-at-ibm-slack.mybluemix.net/badge.svg" alt="Slack Status">
+    </a>
+</p>
+<h1 id='kitura-credentialsfacebook' class='heading'>Kitura-CredentialsFacebook</h1>
 
 <p>Plugins for the Credentials framework that authenticate using Facebook</p>
-
-<p><img src="https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat" alt="Mac OS X">
-<img src="https://img.shields.io/badge/os-linux-green.svg?style=flat" alt="Linux">
-<img src="https://img.shields.io/badge/license-Apache2-blue.svg?style=flat" alt="Apache 2"></p>
-<a href='#summary' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='summary'>Summary</h2>
+<h2 id='summary' class='heading'>Summary</h2>
 
 <p>Plugins for <a href="https://github.com/IBM-Swift/Kitura-Credentials">Kitura-Credentials</a> framework that authenticate using the <a href="https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow">Facebook web login with OAuth</a> and a <a href="https://developers.facebook.com/docs/facebook-login/access-tokens">Facebook OAuth token</a> that was acquired by a mobile app or other client of the Kitura based backend.</p>
-<a href='#table-of-contents' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='table-of-contents'>Table of Contents</h2>
+<h2 id='table-of-contents' class='heading'>Table of Contents</h2>
 
 <ul>
 <li><a href="#swift-version">Swift version</a></li>
@@ -84,10 +159,10 @@
 <li><a href="#example-of-authentication-with-facebook-oauth-token">Example of authentication with Facebook OAuth token</a></li>
 <li><a href="#license">License</a></li>
 </ul>
-<a href='#swift-version' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='swift-version'>Swift version</h2>
+<h2 id='swift-version' class='heading'>Swift version</h2>
 
-<p>The latest version of Kitura-CredentialsFacebook requires <strong>Swift 3.0</strong>. You can download this version of the Swift binaries by following this <a href="https://swift.org/download/">link</a>. Compatibility with other Swift versions is not guaranteed.</p>
-<a href='#example-of-facebook-web-login' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='example-of-facebook-web-login'>Example of Facebook web login</h2>
+<p>The latest version of Kitura-CredentialsFacebook requires <strong>Swift 4.0</strong> or newer. You can download this version of the Swift binaries by following this <a href="https://swift.org/download/">link</a>. Compatibility with other Swift versions is not guaranteed.</p>
+<h2 id='example-of-facebook-web-login' class='heading'>Example of Facebook web login</h2>
 
 <p>A complete sample can be found in <a href="https://github.com/IBM-Swift/Kitura-Credentials-Sample">Kitura-Credentials-Sample</a>.
 <br></p>
@@ -98,7 +173,7 @@
 <span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="nv">middleware</span><span class="p">:</span> <span class="kt">Session</span><span class="p">(</span><span class="nv">secret</span><span class="p">:</span> <span class="s">"Very very secret..."</span><span class="p">))</span>
 </code></pre>
 
-<p>Create an instance of <code>CredentialsFacebook</code> plugin and register it with <code>Credentials</code> framework:</p>
+<p>Create an instance of <code><a href="Classes/CredentialsFacebook.html">CredentialsFacebook</a></code> plugin and register it with <code>Credentials</code> framework:</p>
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Credentials</span>
 <span class="kd">import</span> <span class="kt">CredentialsFacebook</span>
 
@@ -110,16 +185,18 @@
 <span class="n">credentials</span><span class="o">.</span><span class="nf">register</span><span class="p">(</span><span class="n">fbCredentials</span><span class="p">)</span>
 </code></pre>
 
-<p><strong>Where:</strong>
-   - <em>fbClientId</em> is the App ID of your app in the Facebook Developer dashboard
-   - <em>fbClientSecret</em> is the App Secret of your app in the Facebook Developer dashboard
-   - <em>options</em> is an optional dictionary ([String:Any]) of Facebook authentication options whose keys are listed in <code>CredentialsFacebookOptions</code>.</p>
+<p><strong>Where:</strong></p>
+
+<ul>
+<li><em>fbClientId</em> is the App ID of your app in the Facebook Developer dashboard</li>
+<li><em>fbClientSecret</em> is the App Secret of your app in the Facebook Developer dashboard</li>
+<li><em>options</em> is an optional dictionary ([String:Any]) of Facebook authentication options whose keys are listed in <code><a href="Structs/CredentialsFacebookOptions.html">CredentialsFacebookOptions</a></code>.</li>
+</ul>
 
 <p><strong>Note:</strong> The <em>callbackUrl</em> parameter above is used to tell the Facebook web login page where the user&rsquo;s browser should be redirected when the login is successful. It should be a URL handled by the server you are writing.
-Specify where to redirect non-authenticated requests:
-<code>swift
-credentials.options[&quot;failureRedirect&quot;] = &quot;/login/facebook&quot;
-</code></p>
+Specify where to redirect non-authenticated requests:</p>
+<pre class="highlight swift"><code><span class="n">credentials</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">"failureRedirect"</span><span class="p">]</span> <span class="o">=</span> <span class="s">"/login/facebook"</span>
+</code></pre>
 
 <p>Connect <code>credentials</code> middleware to requests to <code>/private</code>:</p>
 <pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/private"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="n">credentials</span><span class="p">)</span>
@@ -137,12 +214,12 @@ credentials.options[&quot;failureRedirect&quot;] = &quot;/login/facebook&quot;
 <span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/login/facebook/callback"</span><span class="p">,</span>
            <span class="nv">handler</span><span class="p">:</span> <span class="n">credentials</span><span class="o">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">fbCredentials</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 </code></pre>
-<a href='#example-of-authentication-with-facebook-oauth-token' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='example-of-authentication-with-facebook-oauth-token'>Example of authentication with Facebook OAuth token</h2>
+<h2 id='example-of-authentication-with-facebook-oauth-token' class='heading'>Example of authentication with Facebook OAuth token</h2>
 
-<p>This example shows how to use <code>CredentialsFacebookToken</code> plugin to authenticate post requests, it shows both the server side and the client side of the request involved.</p>
-<a href='#server-side' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h3 id='server-side'>Server side</h3>
+<p>This example shows how to use <code><a href="Classes/CredentialsFacebookToken.html">CredentialsFacebookToken</a></code> plugin to authenticate post requests, it shows both the server side and the client side of the request involved.</p>
+<h3 id='server-side' class='heading'>Server side</h3>
 
-<p>First create an instance of <code>Credentials</code> and an instance of <code>CredentialsFacebookToken</code> plugin:</p>
+<p>First create an instance of <code>Credentials</code> and an instance of <code><a href="Classes/CredentialsFacebookToken.html">CredentialsFacebookToken</a></code> plugin:</p>
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Credentials</span>
 <span class="kd">import</span> <span class="kt">CredentialsFacebook</span>
 
@@ -150,8 +227,11 @@ credentials.options[&quot;failureRedirect&quot;] = &quot;/login/facebook&quot;
 <span class="k">let</span> <span class="nv">fbCredentials</span> <span class="o">=</span> <span class="kt">CredentialsFacebookToken</span><span class="p">(</span><span class="nv">options</span><span class="p">:</span> <span class="n">options</span><span class="p">)</span>
 </code></pre>
 
-<p><strong>Where:</strong>
-- <em>options</em> is an optional dictionary ([String:Any]) of Facebook authentication options whose keys are listed in <code>CredentialsFacebookOptions</code>.</p>
+<p><strong>Where:</strong></p>
+
+<ul>
+<li><em>options</em> is an optional dictionary ([String:Any]) of Facebook authentication options whose keys are listed in <code><a href="Structs/CredentialsFacebookOptions.html">CredentialsFacebookOptions</a></code>.</li>
+</ul>
 
 <p>Now register the plugin:</p>
 <pre class="highlight swift"><code><span class="n">credentials</span><span class="o">.</span><span class="nf">register</span><span class="p">(</span><span class="n">fbCredentials</span><span class="p">)</span>
@@ -171,7 +251,7 @@ credentials.options[&quot;failureRedirect&quot;] = &quot;/login/facebook&quot;
   <span class="nf">next</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
-<a href='#client-side' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h3 id='client-side'>Client side</h3>
+<h3 id='client-side' class='heading'>Client side</h3>
 
 <p>The client needs to put <a href="https://developers.facebook.com/docs/facebook-login/access-tokens">Facebook access token</a> in request&rsquo;s <code>access_token</code> HTTP header field, and <q>FacebookToken</q> in <code>X-token-type</code> field:</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">urlRequest</span> <span class="o">=</span> <span class="kt">NSMutableURLRequest</span><span class="p">(</span><span class="kt">URL</span><span class="p">:</span> <span class="kt">NSURL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"http://</span><span class="se">\(</span><span class="n">serverUrl</span><span class="se">)</span><span class="s">/collection/</span><span class="se">\(</span><span class="n">name</span><span class="se">)</span><span class="s">"</span><span class="p">))</span>
@@ -186,7 +266,7 @@ credentials.options[&quot;failureRedirect&quot;] = &quot;/login/facebook&quot;
 <span class="p">}</span>
 
 </code></pre>
-<a href='#license' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='license'>License</h2>
+<h2 id='license' class='heading'>License</h2>
 
 <p>This library is licensed under Apache 2.0. Full license text is available in <a href="LICENSE.txt">LICENSE</a>.</p>
 
@@ -197,8 +277,8 @@ credentials.options[&quot;failureRedirect&quot;] = &quot;/login/facebook&quot;
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2017-04-18)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.0</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-06-14)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
