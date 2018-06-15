@@ -176,6 +176,7 @@ public struct FacebookTaggedPlaces: Codable {
 /// Allows further retrieval of paginated data.
 /// See: https://developers.facebook.com/docs/graph-api/using-graph-api/#paging
 public struct CursorBasedPagination: Codable {
+    /// A pair of Cursors that allow traversal through paginated data.
     public struct Cursors: Codable {
         /// The Cursor that points to the start of the page of data that has been returned.
         public let before: String
