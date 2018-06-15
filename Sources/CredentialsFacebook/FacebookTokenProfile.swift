@@ -93,7 +93,7 @@ public struct FacebookTokenProfile: TypeSafeFacebookToken {
     public let gender: String?
     
     /// Information about the subject's home town.
-    public let hometown: FacebookHometown?
+    public let hometown: FacebookPage?
     
     /// Information about items the subject has 'liked'.
     public let likes: FacebookLikes?
@@ -102,7 +102,7 @@ public struct FacebookTokenProfile: TypeSafeFacebookToken {
     public let link: String?
     
     /// The subject's location (current city) as specified on their profile.
-    public let location: FacebookLocation?
+    public let location: FacebookPage?
     
     /// Metadata about the subject's photos, which can be used to access the photos via the User API:
     /// https://developers.facebook.com/docs/graph-api/reference/user/photos

@@ -37,6 +37,9 @@ import TypeDecoder
     respondWith(user, nil)
  }
  ```
+ A pre-defined `FacebookTokenProfile` type has been provided for use if you do not wish to
+ define your own type, and provides an example of how to access the various structured data
+ types (such as profile picture information) provided by the Facebook API.
  */
 public protocol TypeSafeFacebookToken: TypeSafeFacebook {
 

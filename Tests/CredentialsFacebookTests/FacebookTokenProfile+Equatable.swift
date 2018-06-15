@@ -16,8 +16,8 @@
 
 @testable import CredentialsFacebook
 
-extension FacebookHometown: Equatable {
-    public static func == (lhs: FacebookHometown, rhs: FacebookHometown) -> Bool {
+extension FacebookPage: Equatable {
+    public static func == (lhs: FacebookPage, rhs: FacebookPage) -> Bool {
         return lhs.id == rhs.id && lhs.name == rhs.name
     }
 }
