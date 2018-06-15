@@ -79,25 +79,34 @@
                 <a class="nav-group-task-link" href="../Structs/CredentialsFacebookOptions.html">CredentialsFacebookOptions</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B8AgeRangeV">FacebookAgeRange</a>
+                <a class="nav-group-task-link" href="../Structs/CursorBasedPagination.html">CursorBasedPagination</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B7FriendsV">FacebookFriends</a>
+                <a class="nav-group-task-link" href="../Structs/CursorBasedPagination/Cursors.html">– Cursors</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B8HometownV">FacebookHometown</a>
+                <a class="nav-group-task-link" href="../Structs/FacebookAgeRange.html">FacebookAgeRange</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B5LikesV">FacebookLikes</a>
+                <a class="nav-group-task-link" href="../Structs/FacebookFriends.html">FacebookFriends</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B8LocationV">FacebookLocation</a>
+                <a class="nav-group-task-link" href="../Structs/FacebookFriends.html#/s:19CredentialsFacebook0B7FriendsV13FriendSummaryV">– FriendSummary</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B6PagingV">FacebookPaging</a>
+                <a class="nav-group-task-link" href="../Structs/FacebookLikes.html">FacebookLikes</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B6PhotosV">FacebookPhotos</a>
+                <a class="nav-group-task-link" href="../Structs/FacebookLikes/FacebookLike.html">– FacebookLike</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/FacebookPage.html">FacebookPage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/FacebookPhotos.html">FacebookPhotos</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/FacebookPhotos/FacebookPhoto.html">– FacebookPhoto</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/FacebookPicture.html">FacebookPicture</a>
@@ -106,16 +115,28 @@
                 <a class="nav-group-task-link" href="../Structs/FacebookPicture/Properties.html">– Properties</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B5PostsV">FacebookPosts</a>
+                <a class="nav-group-task-link" href="../Structs/FacebookPosts.html">FacebookPosts</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B11PostsPagingV">FacebookPostsPaging</a>
+                <a class="nav-group-task-link" href="../Structs/FacebookPosts/FacebookPost.html">– FacebookPost</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs.html#/s:19CredentialsFacebook0B12TaggedPlacesV">FacebookTaggedPlaces</a>
+                <a class="nav-group-task-link" href="../Structs/FacebookTaggedPlaces.html">FacebookTaggedPlaces</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/FacebookTaggedPlaces/FacebookLocation.html">– FacebookLocation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/FacebookTaggedPlaces/FacebookPlace.html">– FacebookPlace</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/FacebookTaggedPlaces/FacebookTaggedPlace.html">– FacebookTaggedPlace</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/FacebookTokenProfile.html">FacebookTokenProfile</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/OffsetBasedPagination.html">OffsetBasedPagination</a>
               </li>
             </ul>
           </li>
@@ -145,6 +166,10 @@ Facebook OAuth token.</p>
    <span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
+
+<p>A pre-defined <code><a href="../Structs/FacebookTokenProfile.html">FacebookTokenProfile</a></code> type has been provided for use if you do not wish to
+define your own type, and provides an example of how to access the various structured data
+types (such as profile picture information) provided by the Facebook API.</p>
 
           </div>
         </section>
@@ -333,7 +358,7 @@ an appropriate OAuth token supplied via the &lsquo;access_token&rsquo; header.</
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-06-14)</p>
+      <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2018-06-15)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
