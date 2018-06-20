@@ -213,8 +213,8 @@ class TestTypeSafeToken : XCTestCase {
     // inserted.
     // Note that this test uses a separate type (TestFacebookTokenCache instead of
     // TestFacebookToken) from all other tests, because there is no API for resetting the
-    // token cache on a type, and we do not want this test's behaviour (in terms of cache
-    // eviction) to depend on the execution of previous tests.
+    // token cache on a type, and we do not want this test's behaviour to be influenced by
+    // the execution of previous tests.
     func testCacheEviction() {
         guard let profileInstance1 = TestFacebookTokenCache.decodeFacebookResponse(data: testFacebookResponse) else {
             return XCTFail("Facebook JSON response cannot be decoded to TestFacebookToken")
@@ -228,22 +228,23 @@ class TestTypeSafeToken : XCTestCase {
         // Insert two tokens into the cache
         TestFacebookTokenCache.saveInCache(profile: profileInstance1, token: token)
         TestFacebookTokenCache.saveInCache(profile: profileInstance2, token: token2)
-        // Retrieve token 1
-        _ = TestFacebookTokenCache.getFromCache(token: token)
-        // Insert a third token into the cache
         TestFacebookTokenCache.saveInCache(profile: profileInstance3, token: token3)
-        // We expect that token 2 was evicted, because it was the least-used and/or
-        // least recently used.
-        // (FIXME: this _may_ be an implementation detail)
-        XCTAssertNil(TestFacebookTokenCache.getFromCache(token: token2), "Unexpectedly retrieved cached profile for token 2")
-        guard let cacheProfile1 = TestFacebookTokenCache.getFromCache(token: token) else {
-            return XCTFail("Failed to get token 1 from cache")
+        // We expect one of the entries to have been evicted, but it is not predictable
+        // which one (behaviour seems to differ between macOS and Linux)
+        var profileCount = 0
+        if let cacheProfile1 = TestFacebookTokenCache.getFromCache(token: token) {
+            XCTAssertEqual(cacheProfile1, profileInstance1, "Retrieved different cached profile for token 1")
+            profileCount += 1
         }
-        guard let cacheProfile3 = TestFacebookTokenCache.getFromCache(token: token3) else {
-            return XCTFail("Failed to get token 3 from cache")
+        if let cacheProfile2 = TestFacebookTokenCache.getFromCache(token: token2) {
+            XCTAssertEqual(cacheProfile2, profileInstance2, "Retrieved different cached profile for token 2")
+            profileCount += 1
         }
-        XCTAssertEqual(cacheProfile1, profileInstance1, "Retrieved different cached profile for token 2")
-        XCTAssertEqual(cacheProfile3, profileInstance3, "Retrieved different cached profile for token 3")
+        if let cacheProfile3 = TestFacebookTokenCache.getFromCache(token: token3) {
+            XCTAssertEqual(cacheProfile3, profileInstance3, "Retrieved different cached profile for token 3")
+            profileCount += 1
+        }
+        XCTAssertEqual(profileCount, 2, "Expected to retrieve 2 profiles from the cache, but retrieved \(profileCount)")
     }
 
     // Tests that a profile stored in the token cache can be retrieved and returned by a Codable
