@@ -28,7 +28,7 @@ import TypeDecoder
  ### Usage Example: ###
  ```swift
  public struct ExampleProfile: TypeSafeFacebookToken {
-    static var appID: String = "yourAppID"      // The id of your Facebook App
+    static var appID: String? = "yourAppID"     // The id of your Facebook App
     let id: String                              // Protocol requirement
     let name: String                            // Protocol requirement: subject's display name
     let email: String?                          // Optional Facebook field: may not be granted
@@ -137,10 +137,9 @@ extension TypeSafeFacebookToken {
             return onSuccess(cacheProfile)
         }
         // Attempt to validate the supplied token. First check that the token was issued by
-        // the expected OAuth application: this is necessary because the ID returned by
-        // facebook is application-scoped, and so in theory, a user could supply a token
-        // issued by a different OAuth application that contains an ID that collides with
-        // an existing ID issued in the scope of our application.
+        // the expected OAuth application: this is recommended because the ID returned by
+        // facebook is application-scoped. However, the user can choose to skip this and
+        // accept any token by not specifying an appID on their type.
         validateAppID(token: token) { (validID) in
             guard validID else {
                 // Reject any tokens that have not been issued by our OAuth application id (appID).

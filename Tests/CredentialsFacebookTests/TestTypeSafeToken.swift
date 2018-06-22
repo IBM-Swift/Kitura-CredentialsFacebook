@@ -56,7 +56,7 @@ class TestTypeSafeToken : XCTestCase {
         var favouriteNumber: Int?
         
         // Static configuration for this type
-        static var appID: String = "123"
+        static var appID: String? = "123"
 
         // Testing requirement: Equatable
         static func == (lhs: TestFacebookToken, rhs: TestFacebookToken) -> Bool {
@@ -78,7 +78,7 @@ class TestTypeSafeToken : XCTestCase {
         var email: String?
 
         // Static configuration for this type
-        static var appID: String = "123"
+        static var appID: String? = "123"
 
         // Cache should only hold two profiles
         static let cacheSize = 2
@@ -105,7 +105,7 @@ class TestTypeSafeToken : XCTestCase {
         var favouriteNumber: Int?
 
         // Static configuration for this type
-        static var appID: String = "123"
+        static var appID: String? = "123"
         
         // Override the field names for the Facebook response, specifically, omitting the
         // 'email' field that would be included by the default filter.

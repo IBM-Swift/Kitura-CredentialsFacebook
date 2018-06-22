@@ -26,10 +26,12 @@ import TypeDecoder
 /// your type should conform to a specific authentication type, such as
 /// `TypeSafeFacebookToken`.
 public protocol TypeSafeFacebook: TypeSafeCredentials {
-    /// The OAuth client id ('AppID') that tokens should correspond to. This value must be
+    /// The OAuth client id ('AppID') that tokens should correspond to. This value should be
     /// set to match the Facebook OAuth app that was used to issue the token. Tokens that
     /// do not match this value will be rejected.
-    static var appID: String { get }
+    /// If you do not specify a value for appID, then the appID will not be verified and all
+    /// tokens will be accepted, regardless of which app they are associated with.
+    static var appID: String? { get }
 
     /// A set of valid field names that can be requested from Facebook. A default set is
     /// implemented for you, however this property can be overridden to customize or
@@ -85,6 +87,10 @@ extension TypeSafeFacebook {
     /// - Parameter callback: A callback that will be invoked with `true` if the
     ///   token matches our AppID, or false otherwise.
     static func validateAppID(token: String, callback: @escaping (Bool) -> Void) {
+        guard let appID = Self.appID else {
+            // User has not specified an appID - allow all tokens
+            return callback(true)
+        }
         // Send the app id request to facebook
         let fbAppReq = HTTP.request("https://graph.facebook.com/app?access_token=\(token)") { response in
             // check you have recieved an app id from facebook which matches the app id you set
@@ -93,7 +99,7 @@ extension TypeSafeFacebook {
                 response.statusCode == HTTPStatusCode.OK,
                 let _ = try? response.readAllData(into: &body),
                 let appDictionary = try? JSONSerialization.jsonObject(with: body, options: []) as? [String : Any],
-                Self.appID == appDictionary?["id"] as? String
+                appID == appDictionary?["id"] as? String
                 else {
                     return callback(false)
             }

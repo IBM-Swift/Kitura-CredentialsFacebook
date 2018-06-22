@@ -45,7 +45,7 @@ public struct FacebookTokenProfile: TypeSafeFacebookToken {
     /// ```swift
     ///     FacebookTokenProfile.appID = "<your OAuth client id>"
     /// ```
-    public static var appID: String = ""
+    public static var appID: String?
 
     /// The application-scoped ID field. Note that this field uniquely identifies a user
     /// wihin the context of the application represented by the token.
