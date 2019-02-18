@@ -61,6 +61,7 @@ public class CredentialsFacebookToken: CredentialsPluginProtocol {
             fields = options?[CredentialsFacebookOptions.fields] as? String
         }
         delegate = options?[CredentialsFacebookOptions.userProfileDelegate] as? UserProfileDelegate
+		self.tokenTimeToLive = tokenTimeToLive
     }
 
     /// Authenticate incoming request using Facebook OAuth token.
