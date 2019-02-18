@@ -58,6 +58,8 @@ public protocol TypeSafeFacebookToken: TypeSafeFacebook {
     /// the cache has an unlimited size.
     static var cacheSize: Int { get }
 
+	/// The time in seconds since the user profile was generated that the access token will be considered valid.
+	static var tokenTimeToLive: TimeInterval? { get }
 }
 
 /// The cache element for keeping facebook profile information.
@@ -65,11 +67,15 @@ private class FacebookCacheElement {
     /// The user profile information stored as `TypeSafeFacebookToken`.
     internal var userProfile: TypeSafeFacebookToken
 
+	/// The time the UserProfile was originally created
+	var createdAt: Date
+	
     /// Initialize a `FacebookCacheElement`.
     ///
     /// - Parameter profile: the `TypeSafeFacebookToken` to store.
     internal init (profile: TypeSafeFacebookToken) {
         userProfile = profile
+		createdAt = Date()
     }
 }
 
@@ -90,6 +96,11 @@ extension TypeSafeFacebookToken {
     public static var cacheSize: Int {
         return 0
     }
+	
+	/// Default for tokenTimeToLive is nil meaning the token will be considered valid as long as it is in the cache.
+	public static var tokenTimeToLive: TimeInterval? {
+		return nil
+	}
 
     // Associates a profile cache with the user's type. This relieves the user from having to
     // declare a usersCache property on their conforming type.
@@ -164,8 +175,15 @@ extension TypeSafeFacebookToken {
         #else
         let key = token as NSString
         #endif
-        let cacheElement = Self.usersCache.object(forKey: key)
-        return cacheElement?.userProfile as? Self
+        guard let cacheElement = Self.usersCache.object(forKey: key) else {
+			return nil
+		}
+		if let ttl = Self.tokenTimeToLive,
+			cacheElement.createdAt.addingTimeInterval(ttl) < Date()
+		{
+			return nil
+		}
+		return cacheElement.userProfile as? Self
     }
 
     static func saveInCache(profile: Self, token: String) {

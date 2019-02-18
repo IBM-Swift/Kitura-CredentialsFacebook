@@ -34,7 +34,10 @@ public class CredentialsFacebookToken: CredentialsPluginProtocol {
     public var redirecting: Bool {
         return false
     }
-
+	
+	/// The time in seconds since the user profile was generated that the access token will be considered valid.
+	public let tokenTimeToLive: TimeInterval?
+	
     /// User profile cache.
     public var usersCache: NSCache<NSString, BaseCacheElement>?
 
@@ -49,7 +52,7 @@ public class CredentialsFacebookToken: CredentialsPluginProtocol {
     /// Initialize a `CredentialsFacebookToken` instance.
     ///
     /// - Parameter options: A dictionary of plugin specific options. The keys are defined in `CredentialsFacebookOptions`.
-    public init (options: [String:Any]?=nil) {
+    public init (options: [String:Any]?=nil, tokenTimeToLive: TimeInterval? = nil) {
         if let fields = options?[CredentialsFacebookOptions.fields] as? [String] {
             self.fields = fields.joined(separator: ",")
         }
@@ -84,10 +87,19 @@ public class CredentialsFacebookToken: CredentialsPluginProtocol {
                 #else
                     let key = token as NSString
                 #endif
-                let cacheElement = usersCache!.object(forKey: key)
-                if let cached = cacheElement {
-                    onSuccess(cached.userProfile)
-                    return
+                if let cached = usersCache?.object(forKey: key) {
+					if let ttl = tokenTimeToLive {
+						if Date() < cached.createdAt.addingTimeInterval(ttl) {
+							onSuccess(cached.userProfile)
+							return
+						}
+						// If current time is later than time to live, continue to standard token authentication.
+						// Don't need to evict token, since it will replaced if the token is successfully autheticated.
+					} else {
+						// No time to live set, use token until it is evicted from the cache
+						onSuccess(cached.userProfile)
+						return
+					}
                 }
 
                 var requestOptions: [ClientRequest.Options] = []
@@ -126,7 +138,7 @@ public class CredentialsFacebookToken: CredentialsPluginProtocol {
                                 #else
                                     let key = token as NSString
                                 #endif
-                                self.usersCache!.setObject(newCacheElement, forKey: key)
+                                self.usersCache?.setObject(newCacheElement, forKey: key)
                                 onSuccess(userProfile)
                                 return
                             }
