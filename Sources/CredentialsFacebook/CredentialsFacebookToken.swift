@@ -52,6 +52,7 @@ public class CredentialsFacebookToken: CredentialsPluginProtocol {
     /// Initialize a `CredentialsFacebookToken` instance.
     ///
     /// - Parameter options: A dictionary of plugin specific options. The keys are defined in `CredentialsFacebookOptions`.
+	/// - Parameter tokenTimeToLive: The time in seconds since the user profile was generated that the access token will be considered valid.
     public init (options: [String:Any]?=nil, tokenTimeToLive: TimeInterval? = nil) {
         if let fields = options?[CredentialsFacebookOptions.fields] as? [String] {
             self.fields = fields.joined(separator: ",")
