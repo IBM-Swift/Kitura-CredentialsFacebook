@@ -99,7 +99,7 @@ extension TypeSafeFacebook {
                 response.statusCode == HTTPStatusCode.OK,
                 let _ = try? response.readAllData(into: &body),
                 let appDictionary = try? JSONSerialization.jsonObject(with: body, options: []) as? [String : Any],
-                appID == appDictionary?["id"] as? String
+                appID == appDictionary["id"] as? String
                 else {
                     return callback(false)
             }
