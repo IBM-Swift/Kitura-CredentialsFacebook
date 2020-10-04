@@ -28,8 +28,8 @@ let package = Package(
         )
     ],    
     dependencies: [
-         .package(url: "https://github.com/Kitura/Kitura-Credentials.git", from: "2.4.0"),
-         .package(url: "https://github.com/Kitura/TypeDecoder.git", from: "1.0.0"),
+         .package(url: "https://github.com/Kitura/Kitura-Credentials.git", from: "2.5.200"),
+         .package(url: "https://github.com/Kitura/TypeDecoder.git", from: "1.3.200"),
          
     ],
     targets: [
